@@ -249,6 +249,39 @@ Math.max(0,Math.min(100,indiceOvulo));
 
 let semaforo = "🔴 SCARSO";
 
+let finestraPorcino =
+"Condizioni poco favorevoli";
+
+if(indicePorcino >= 80 && pioggiaFutura >= 15){
+
+finestraPorcino =
+"🍄 ALTA probabilità nascita entro 3-6 giorni";
+
+}
+
+else if(indicePorcino >= 60){
+
+finestraPorcino =
+"🍄 Possibile nascita entro 5-8 giorni";
+
+}
+
+let finestraOvulo =
+"Probabilità bassa";
+
+if(indiceOvulo >= 75){
+
+finestraOvulo =
+"🥚 Possibile nascita entro 2-5 giorni";
+
+}
+
+else if(indiceOvulo >= 60){
+
+finestraOvulo =
+"🥚 Possibile nascita entro 4-7 giorni";
+
+}
 if(indicePorcino >= 80){
 
 semaforo = "🟢🟢 ECCELLENTE";
@@ -304,6 +337,24 @@ document.getElementById("risultato").innerHTML =
 🥚 Indice Ovulo:
 <b>${indiceOvulo}/100</b>
 </p>
+
+hr>
+
+<p>
+🌧️ Pioggia prevista prossimi 7 giorni:
+<b>${pioggiaFutura.toFixed(1)} mm</b>
+</p>
+
+<p>
+🌡️ Temperatura media prevista:
+<b>${tempFutura} °C</b>
+</p>
+
+<hr>
+
+<h3>${finestraPorcino}</h3>
+
+<h3>${finestraOvulo}</h3>
 
 <h3>${uscita}</h3>
 
