@@ -61,7 +61,7 @@ button{
 
 <div class="container">
 
-<h1>🍄 Meteo Funghi Pratomagno</h1>
+<h1>🍄 Previsioni Porcini/Ovuli Valdarno</h1>
 
 <select id="localita">
 
@@ -127,7 +127,7 @@ document.getElementById("risultato").innerHTML =
 try{
 
 const url =
-`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
+`<a href="https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
 
 const risposta =
 await fetch(url);
@@ -174,9 +174,6 @@ Math.round(
 if(indiceOvulo > 100)
 
 indiceOvulo = 100;
-document.getElementById("risultato").innerHTML =
-
-`
 document.getElementById("risultato").innerHTML =
 
 `
