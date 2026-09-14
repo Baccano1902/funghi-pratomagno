@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>🍄 Meteo Funghi Pratomagno</title>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 
 body{
@@ -101,11 +101,14 @@ Analizza Località
 Seleziona una località e premi "Analizza Località"
 
 </div>
+<div class="result">
+<h3>Grafico Meteo</h3>
+<canvas id="grafico"></canvas>
 
 </div>
 
 <script>
-
+let grafico = null;
 async function analizza(){
 
 const coordinate =
@@ -139,19 +142,122 @@ dati.daily.temperature_2m_max[0];
 
 const tempMin =
 dati.daily.temperature_2m_min[0];
+let indicePorcino =
 
+Math.round(
+
+(pioggia * 5) +
+
+((20-tempMax) * 4)
+5
+);
+
+if(indicePorcino > 100)
+
+indicePorcino = 100;
+
+if(indicePorcino < 0)
+
+indicePorcino = 0;
+
+let indiceOvulo =
+
+Math.round(
+
+(tempMax * 3) +
+
+(pioggia * 2)
+
+);
+
+if(indiceOvulo > 100)
+
+indiceOvulo = 100;
 document.getElementById("risultato").innerHTML =
 
 `
+document.getElementById("risultato").innerHTML =
+
+`
+
 <h2>Dati Meteo</h2>
 
 <p>🌧️ Pioggia prevista: <b>${pioggia} mm</b></p>
 
 <p>🌡️ Temperatura massima: <b>${tempMax} °C</b></p>
 
+
 <p>🌡️ Temperatura minima: <b>${tempMin} °C</b></p>
 
+<hr>
+
+<p>🍄 Indice Porcino: <b>${indicePorcino}/100</b></p>
+
+<p>🥚 Indice Ovulo: <b>${indiceOvulo}/100</b></p>
+
 `;
+const ctx =
+document.getElementById("grafico");
+
+if(grafico){
+
+grafico.destroy();
+}
+grafico = new Chart(ctx,{
+
+type:'bar',
+
+data:{
+
+labels:[
+
+'Pioggia',
+
+'Temp Max',
+
+'Temp Min',
+
+'Porcino',
+
+'Ovulo'
+
+],
+datasets:[{
+
+label:'Analisi Micologica',
+
+data:[
+
+pioggia,
+
+tempMax,
+
+tempMin,
+
+indicePorcino,
+
+indiceOvulo
+],
+
+backgroundColor:[
+
+'blue',
+
+'red',
+
+'orange',
+
+'brown',
+
+'gold'
+
+]
+
+}]
+
+}
+
+});
 
 }
 catch(errore){
