@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+<script src="https://cdn.jsdelivr..jsscript>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -76,13 +77,167 @@ Analizza Località
 
 <div class="card" id="risultato">
 
-Attesa dati...
+<h3>Grafico Meteo Micologico</h3>
+<canvas id="grafico"></canvas>
 
 </div>
 
 <script>
+let grafico = null;
+let grafico = null;
 
 async function analizza(){
+
+const coord =
+document.getElementById("localita").value;
+
+const split = coord.split(",");
+
+const lat = split[0];
+const lon = split[1];
+
+document.getElementById("risultato").innerHTML =
+"Caricamento dati meteo...";
+
+const oggi = new Date();
+
+const fine =
+oggi.toISOString().split("T")[0];
+
+const inizio = new Date();
+
+inizio.setDate(inizio.getDate()-20);
+
+const start =
+inizio.toISOString().split("T")[0];
+
+const url =
+`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${start}&end_date=${fine}&daily=temperature_2m_mean,precipitation_sum&timezone=auto`;
+
+try{
+
+const risposta = await fetch(url);
+
+const dati = await risposta.json();
+
+const precipitazioni =
+dati.daily.precipitation_sum;
+
+const temperature =
+dati.daily.temperature_2m_mean;
+
+let pioggiaTotale = 0;
+
+for(let p of precipitazioni){
+pioggiaTotale += p;
+}
+
+let tempMedia = 0;
+
+for(let t of temperature){
+tempMedia += t;
+}
+
+tempMedia =
+(tempMedia / temperature.length).toFixed(1);
+
+let indicePorcino =
+Math.round(
+(pioggiaTotale * 0.5) +
+((20-tempMedia) * 5)
+);
+
+if(indicePorcino>100)
+indicePorcino=100;
+
+if(indicePorcino<0)
+indicePorcino=0;
+
+let indiceOvulo =
+Math.round(
+(tempMedia*3) +
+(pioggiaTotale*0.2)
+);
+
+if(indiceOvulo>100)
+indiceOvulo=100;
+
+let semaforo="🔴";
+
+if(indicePorcino>75)
+semaforo="🟢🟢";
+else if(indicePorcino>50)
+semaforo="🟢";
+else if(indicePorcino>30)
+semaforo="🟡";
+
+document.getElementById("risultato").innerHTML =
+
+`
+<h2>Dati Micologici</h2>
+
+<p>${semaforo}</p>
+
+<p>🌧️ Pioggia ultimi 20 giorni:
+<b>${pioggiaTotale.toFixed(1)} mm</b></p>
+
+<p>🌡️ Temperatura media:
+<b>${tempMedia} °C</b></p>
+
+<p>🍄 Indice Porcino:
+<b>${indicePorcino}/100</b></p>
+
+<p>🥚 Indice Ovulo:
+<b>${indiceOvulo}/100</b></p>
+
+`;
+
+const ctx =
+document.getElementById("grafico");
+
+if(grafico){
+grafico.destroy();
+}
+
+grafico = new Chart(ctx, {
+
+type:"line",
+
+data:{
+
+labels:dati.daily.time,
+
+datasets:[
+
+{
+label:"Pioggia (mm)",
+data:precipitazioni,
+borderColor:"blue",
+backgroundColor:"blue"
+},
+
+{
+label:"Temperatura (°C)",
+data:temperature,
+borderColor:"red",
+backgroundColor:"red"
+}
+
+]
+
+}
+
+});
+
+}
+catch(e){
+
+document.getElementById("risultato").innerHTML =
+"Errore recupero dati meteo";
+
+}
+
+}
 
 const coord =
 document.getElementById("localita").value;
