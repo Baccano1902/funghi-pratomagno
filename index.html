@@ -172,6 +172,36 @@ pioggiaTotale += p;
 
 }
 
+const urlForecast =
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
+
+const rispostaForecast =
+await fetch(urlForecast);
+
+const forecast =
+await rispostaForecast.json();
+
+let pioggiaFutura = 0;
+
+for(let i = 0; i < 7; i++){
+
+pioggiaFutura +=
+forecast.daily.precipitation_sum[i];
+
+}
+
+let tempFutura = 0;
+
+for(let i = 0; i < 7; i++){
+
+tempFutura +=
+forecast.daily.temperature_2m_max[i];
+
+}
+
+tempFutura =
+(tempFutura / 7).toFixed(1);
+    
 let tempMedia = 0;
 
 for(let t of temperature){
