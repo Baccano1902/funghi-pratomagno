@@ -354,10 +354,11 @@ responsive:true
 }
 catch(error){
 
-document.getElementById("risultato").innerHTML =
-"❌ Errore nel recupero dati meteo";
-
 console.error(error);
+
+document.getElementById("risultato").innerHTML =
+
+"❌ Errore nel recupero dati meteo" + error.message;
 
 }
 
