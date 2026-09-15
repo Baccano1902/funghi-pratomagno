@@ -1,444 +1,1022 @@
-<!DOCTYPE html>
-<html lang="it">
-
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>🍄 Meteo Funghi Pratomagno</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-
+<!DOCTYPE html> <html lang="it"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>🍄 Meteo Funghi Pratomagno</title> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
 body{
-    font-family:Arial,sans-serif;
-    background-image:url("https://images.unsplash.com/photo-1506744038136-46273834b3fb");
-    
-    background-size:cover;
-
-    background-position:center;
-
-    background-attachment:fixed;
-    
-    margin:0;
-    padding:20px;
+font-family:Arial,sans-serif;
+background-image:url("https://images.unsplash.com/photo-1506744038136-46273834b3fb");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+margin:0;
+padding:20px;
 }
 
 .container{
-    max-width:1100px;
-    margin:auto;
-    background:rgba(255,255,255,0.92);
-    padding:25px;
-    border-radius:20px;
-    box-shadow:0 0 30px rgba(0,0,0,.15);
-    backdrop-filter:blur(5px);
+max-width:1100px;
+margin:auto;
+background:rgba(255,255,255,0.94);
+padding:25px;
+border-radius:20px;
+box-shadow:0 0 30px rgba(0,0,0,.15);
+backdrop-filter:blur(5px);
 }
 
 h1{
-    text-align:center;
-    color:#1b5e20;
+text-align:center;
+color:#1b5e20;
+}
+
+.subtitle{
+text-align:center;
+font-size:18px;
+color:#555;
 }
 
 select{
-    width:100%;
-    padding:12px;
-    margin-bottom:15px;
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
 }
 
 button{
-    width:100%;
-    padding:12px;
-    background:#1b5e20;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
+width:100%;
+padding:14px;
+background:#1b5e20;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+font-weight:bold;
+}
+
+button:hover{
+background:#2e7d32;
 }
 
 .result{
-    margin-top:20px;
-    padding:20px;
-    background:#f4fff4;
-    border-radius:10px;
+margin-top:20px;
+padding:20px;
+background:#f4fff4;
+border-radius:10px;
+}
+
+.info-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:12px;
+margin:15px 0;
+}
+
+.info-card{
+background:white;
+border-radius:10px;
+padding:15px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.info-card .label{
+color:#666;
+font-size:13px;
+}
+
+.info-card .value{
+font-size:20px;
+font-weight:bold;
+margin-top:5px;
+}
+
+.index-box{
+margin-top:15px;
+padding:18px;
+border-radius:12px;
+background:#fff;
+border-left:7px solid #1b5e20;
+}
+
+.index-number{
+font-size:35px;
+font-weight:bold;
+}
+
+.finestra{
+padding:15px;
+border-radius:10px;
+background:#e8f5e9;
+margin-top:15px;
+}
+
+.forecast-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+gap:8px;
+margin-top:15px;
+}
+
+.day-card{
+background:white;
+border-radius:10px;
+padding:10px;
+text-align:center;
+box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.day-card.best{
+border:3px solid #2e7d32;
+background:#e8f5e9;
+}
+
+.day-card .date{
+font-weight:bold;
+color:#1b5e20;
+}
+
+.day-card .rain{
+color:#1565c0;
+}
+
+.day-card .humidity{
+color:#00838f;
+}
+
+.day-card .temp{
+color:#d84315;
+}
+
+.score{
+font-size:22px;
+font-weight:bold;
+}
+
+.good{
+color:#2e7d32;
+}
+
+.medium{
+color:#f57c00;
+}
+
+.bad{
+color:#c62828;
 }
 
 canvas{
-    margin-top:20px;
+margin-top:25px;
 }
 
-</style>
+.loading{
+text-align:center;
+font-size:18px;
+padding:20px;
+}
 
-</head>
+.legend{
+font-size:13px;
+color:#666;
+margin-top:10px;
+}
 
-<body>
-
-<div class="container">
-
-<h1>🍄 Previsioni Porcini/Ovuli Valdarno</h1>
-
-<p style="text-align:center;font-size:18px;color:#555;">
-
-Valdarno • Pratomagno • Monticiano • Siena
-
-</p>
-
-<select id="localita">
-
-<option value="43.648210837035236,11.672634310976488">Pozza Nera</option>
-<option value="43.61493048759856,11.69405168018871">Monte Lori Pic Nic</option>
-<option value="43.60871375792392,11.705157764789897">Monte Lori Campeggio</option>
-<option value="43.620597527331924,11.657856370237369">Tre Fonti</option>
-<option value="43.619602322842674,11.65123576223233">Trappola</option>
-<option value="43.61273877340515,11.656966725681125">Trevane</option>
-<option value="43.50398069862869,11.545716077300723">Cocioni</option>
-<option value="43.48898753383693,11.512202978459452">Moncioni</option>
-<option value="43.52542199979008,11.522390226279295">Cavriglia Quercie</option>
-<option value="43.52070302717631,11.502276149076717">Cavriglia Alta</option>
-<option value="43.46761467459521,11.670888620816104">Pergine Valdarno</option>
-<option value="43.53632378809326,11.625183736328342">Tasso Lore</option>
-
-</select>
-
-<button onclick="analizza()">
-Analizza Località
-</button>
-
-<div id="risultato" class="result">
-
+</style> </head> <body> <div class="container"> <h1>🍄 Previsioni Porcini/Ovuli Valdarno</h1> <p class="subtitle"> Valdarno • Pratomagno • Monticiano • Siena </p> <select id="localita"> <option value="43.648210837035236,11.672634310976488">Pozza Nera</option> <option value="43.61493048759856,11.69405168018871">Monte Lori Pic Nic</option> <option value="43.60871375792392,11.705157764789897">Monte Lori Campeggio</option> <option value="43.620597527331924,11.657856370237369">Tre Fonti</option> <option value="43.619602322842674,11.65123576223233">Trappola</option> <option value="43.61273877340515,11.656966725681125">Trevane</option> <option value="43.50398069862869,11.545716077300723">Cocioni</option> <option value="43.48898753383693,11.512202978459452">Moncioni</option> <option value="43.52542199979008,11.522390226279295">Cavriglia Quercie</option> <option value="43.52070302717631,11.502276149076717">Cavriglia Alta</option> <option value="43.46761467459521,11.670888620816104">Pergine Valdarno</option> <option value="43.53632378809326,11.625183736328342">Tasso Lore</option> </select> <button onclick="analizza()"> 🔍 Analizza Località </button> <div id="risultato" class="result">
 Seleziona una località e premi "Analizza Località"
 
 </div>
-
 <canvas id="grafico"></canvas>
 
-
-<script>
-
+</div> <script>
 let grafico = null;
+
+/* ================================
+FUNZIONI UTILI
+================================ */
+
+function clamp(numero,min,max){
+
+return Math.max(min,Math.min(max,numero));
+}
+
+function classeIndice(indice){
+
+if(indice >= 75) return "good";
+if(indice >= 50) return "medium";
+return "bad";
+}
+
+function nomeGiorno(data){
+
+const giorni = [
+    "Dom",
+    "Lun",
+    "Mar",
+    "Mer",
+    "Gio",
+    "Ven",
+    "Sab"
+];
+return giorni[new Date(data).getDay()];
+}
+
+function formatData(data){
+
+const d = new Date(data);
+return d.toLocaleDateString(
+    "it-IT",
+    {
+        day:"2-digit",
+        month:"2-digit"
+    }
+);
+}
+
+/* ================================
+ALTITUDINE
+================================ */
+
+async function recuperaAltitudine(lat,lon){
+
+const url =
+`https://api.open-meteo.com/v1/elevation?latitude=${lat}&longitude=${lon}`;
+const risposta = await fetch(url);
+if(!risposta.ok){
+    throw new Error(
+        "Errore recupero altitudine"
+    );
+}
+const dati = await risposta.json();
+if(
+    !dati.elevation ||
+    dati.elevation.length === 0
+){
+    return null;
+}
+return dati.elevation[0];
+}
+
+/* ================================
+ANALISI
+================================ */
 
 async function analizza(){
 
+const select =
+document.getElementById("localita");
 const coordinate =
-document.getElementById("localita").value;
-
+select.value;
+const nomeLocalita =
+select.options[select.selectedIndex].text;
 const parti =
 coordinate.split(",");
-
-const lat = parti[0];
-const lon = parti[1];
-
+const lat =
+parseFloat(parti[0]);
+const lon =
+parseFloat(parti[1]);
 document.getElementById("risultato").innerHTML =
-"⏳ Recupero dati meteo...";
-
+`<div class="loading">
+⏳ Recupero dati meteo e altitudine...
+</div>`;
 try{
-
-const oggi = new Date();
-
-const fine =
-oggi.toISOString().split("T")[0];
-
-const inizio = new Date();
-
-inizio.setDate(
-inizio.getDate()-20
-);
-
-const start =
-inizio.toISOString().split("T")[0];
-
-const url =
-
-`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${start}&end_date=${fine}&daily=temperature_2m_mean,precipitation_sum&timezone=auto`;
-
-const risposta = await fetch(url);
-
-const dati = await risposta.json();
-
-const giorni =
-dati.daily.time;
-
-const precipitazioni =
-dati.daily.precipitation_sum;
-
-const temperature =
-dati.daily.temperature_2m_mean;
-
-let pioggiaTotale = 0;
-
-for(let p of precipitazioni){
-
-pioggiaTotale += p;
-
-}
-
-const urlForecast =
-`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
-
-const rispostaForecast =
-await fetch(urlForecast);
-
-const forecast =
-await rispostaForecast.json();
-
-let pioggiaFutura = 0;
-
-for(let i = 0; i < 7; i++){
-
-pioggiaFutura +=
-forecast.daily.precipitation_sum[i];
-
-}
-
-let tempFutura = 0;
-
-for(let i = 0; i < 7; i++){
-
-tempFutura +=
-forecast.daily.temperature_2m_max[i];
-
-}
-
-tempFutura =
-(tempFutura / 7).toFixed(1);
-    
-let tempMedia = 0;
-
-for(let t of temperature){
-
-tempMedia += t;
-
-}
-
-tempMedia =
-
-(tempMedia /
-
-temperature.length)
-
-.toFixed(1);
-let indicePorcino =
-
-Math.round(
-
-(pioggiaTotale * 0.7)
-
-+
-
-((22-tempMedia)*5)
-
-);
-
-indicePorcino =
-Math.max(0,Math.min(100,indicePorcino));
-
-let indiceOvulo =
-
-Math.round(
-
-(tempMedia * 3)
-
-+
-
-(pioggiaTotale * 0.3)
-    
-);
-
-indiceOvulo =
-Math.max(0,Math.min(100,indiceOvulo));
-
-let semaforo = "🔴 SCARSO";
-
-let finestraPorcino =
-"Condizioni poco favorevoli";
-
-if(indicePorcino >= 80 && pioggiaFutura >= 15){
-
-finestraPorcino =
-"🍄 ALTA probabilità nascita entro 3-6 giorni";
-
-}
-
-else if(indicePorcino >= 60){
-
-finestraPorcino =
-"🍄 Possibile nascita entro 5-8 giorni";
-
-}
-
-let finestraOvulo =
-"Probabilità bassa";
-
-if(indiceOvulo >= 75){
-
-finestraOvulo =
-"🥚 Possibile nascita entro 2-5 giorni";
-
-}
-
-else if(indiceOvulo >= 60){
-
-finestraOvulo =
-"🥚 Possibile nascita entro 4-7 giorni";
-
-}
-if(indicePorcino >= 80){
-
-semaforo = "🟢🟢 ECCELLENTE";
-
-}
-
-else if(indicePorcino >= 60){
-
-semaforo = "🟢 BUONO";
-
-}
-else if(indicePorcino >= 40){
-
-semaforo = "🟡 DISCRETO";
-
-}
-
-let uscita = "Ancora presto";
-
-if(indicePorcino >= 80){
-
-uscita = "🍄 Buttata probabile entro 2-5 giorni";
-
-}
-
-else if(indicePorcino >= 60){
-uscita = "🍄 Controllare entro 5-7 giorni";
-
-}
-document.getElementById("risultato").innerHTML =
-
-`
-<h2>${semaforo}</h2>
-
-<p>
-🌧️ Pioggia ultimi 20 giorni:
-<b>${pioggiaTotale.toFixed(1)} mm</b>
-</p>
-
-<p>
-🌡️ Temperatura media:
-<b>${tempMedia} °C</b>
-</p>
-
-<hr>
-
-<p>
-🍄 Indice Porcino:
-<b>${indicePorcino}/100</b>
-</p>
-
-<p>
-🥚 Indice Ovulo:
-<b>${indiceOvulo}/100</b>
-</p>
-
-<p>
-🌧️ Pioggia prevista prossimi 7 giorni:
-<b>${pioggiaFutura.toFixed(1)} mm</b>
-</p>
-
-<p>
-🌡️ Temperatura media prevista:
-<b>${tempFutura} °C</b>
-</p>
-
-<hr>
-
-<h3>${finestraPorcino}</h3>
-
-<h3>${finestraOvulo}</h3>
-
-<h3>${uscita}</h3>
-
-`;
-
-const ctx =
-document.getElementById("grafico");
-
-if(grafico){
-grafico.destroy();
-}
-
-grafico = new Chart(ctx,{
-
-type:"bar",
-
-data:{
-labels:giorni,
-
-datasets:[{
-label:"Analisi Micologica",
-
-data:[
-
-{
-label:"Pioggia (mm)",
-
-data:precipitazioni,
-
-borderColor:"blue",
-
-backgroundColor:"rgba(0,0,255,0.3)",
-
-fill:true,
-
-tension:0.4
-
-},
-
-{
-label:"Temperatura °C",
-
-data:temperature,
-
-borderColor:"red",
-
-backgroundColor:"rgba(255,0,0,0.2)",
-
-fill:true,
-
-tension:0.4
-
-}
-
-],
-
-backgroundColor:[
-"blue",
-"red",
-"orange",
-"brown",
-"gold"
-]
-}]
-},
-
-options:{
-responsive:true
-}
-
-});
-
+    /* ================================
+       DATE
+    ================================= */
+    const oggi = new Date();
+    const fine =
+    oggi.toISOString().split("T")[0];
+    const inizioData =
+    new Date();
+    inizioData.setDate(
+        inizioData.getDate()-20
+    );
+    const start =
+    inizioData.toISOString().split("T")[0];
+    /* ================================
+       ALTITUDINE
+    ================================= */
+    const altitudine =
+    await recuperaAltitudine(
+        lat,
+        lon
+    );
+    /* ================================
+       STORICO
+    ================================= */
+    const urlStorico =
+    `https://archive-api.open-meteo.com/v1/archive?`+
+    `latitude=${lat}`+
+    `&longitude=${lon}`+
+    `&start_date=${start}`+
+    `&end_date=${fine}`+
+    `&daily=`+
+    `temperature_2m_mean,`+
+    `precipitation_sum,`+
+    `relative_humidity_2m_mean`+
+    `&timezone=auto`;
+    const rispostaStorico =
+    await fetch(urlStorico);
+    if(!rispostaStorico.ok){
+        throw new Error(
+            "Errore dati storici"
+        );
+    }
+    const storico =
+    await rispostaStorico.json();
+    const giorniStorico =
+    storico.daily.time;
+    const pioggiaStorico =
+    storico.daily.precipitation_sum;
+    const temperaturaStorico =
+    storico.daily.temperature_2m_mean;
+    const umiditaStorico =
+    storico.daily.relative_humidity_2m_mean;
+    /* ================================
+       CALCOLO STORICO
+    ================================= */
+    let pioggia20 = 0;
+    let pioggia14 = 0;
+    let pioggia7 = 0;
+    let pioggia3 = 0;
+    let tempSomma = 0;
+    let umiditaSomma = 0;
+    let giorniValidi = 0;
+    for(
+        let i=0;
+        i<pioggiaStorico.length;
+        i++
+    ){
+        const pioggia =
+        pioggiaStorico[i] || 0;
+        const temp =
+        temperaturaStorico[i];
+        const umidita =
+        umiditaStorico[i];
+        pioggia20 += pioggia;
+        if(i >= pioggiaStorico.length-14){
+            pioggia14 += pioggia;
+        }
+        if(i >= pioggiaStorico.length-7){
+            pioggia7 += pioggia;
+        }
+        if(i >= pioggiaStorico.length-3){
+            pioggia3 += pioggia;
+        }
+        if(temp !== null){
+            tempSomma += temp;
+        }
+        if(umidita !== null){
+            umiditaSomma += umidita;
+        }
+        if(
+            temp !== null &&
+            umidita !== null
+        ){
+            giorniValidi++;
+        }
+    }
+    const tempMedia =
+    giorniValidi > 0
+    ?
+    tempSomma/giorniValidi
+    :
+    0;
+    const umiditaMedia =
+    giorniValidi > 0
+    ?
+    umiditaSomma/giorniValidi
+    :
+    0;
+    /* ================================
+       PREVISIONE
+    ================================= */
+    const urlForecast =
+    `https://api.open-meteo.com/v1/forecast?`+
+    `latitude=${lat}`+
+    `&longitude=${lon}`+
+    `&forecast_days=7`+
+    `&daily=`+
+    `temperature_2m_max,`+
+    `temperature_2m_min,`+
+    `precipitation_sum,`+
+    `precipitation_probability_max,`+
+    `relative_humidity_2m_mean`+
+    `&timezone=auto`;
+    const rispostaForecast =
+    await fetch(urlForecast);
+    if(!rispostaForecast.ok){
+        throw new Error(
+            "Errore dati previsionali"
+        );
+    }
+    const forecast =
+    await rispostaForecast.json();
+    const giorniForecast =
+    forecast.daily.time;
+    const pioggiaForecast =
+    forecast.daily.precipitation_sum;
+    const probPioggia =
+    forecast.daily.precipitation_probability_max;
+    const tempMax =
+    forecast.daily.temperature_2m_max;
+    const tempMin =
+    forecast.daily.temperature_2m_min;
+    const umiditaForecast =
+    forecast.daily.relative_humidity_2m_mean;
+    /* ================================
+       PIOGGIA FUTURA
+    ================================= */
+    let pioggiaFutura = 0;
+    for(
+        let i=0;
+        i<pioggiaForecast.length;
+        i++
+    ){
+        pioggiaFutura +=
+        pioggiaForecast[i] || 0;
+    }
+    /* ================================
+       INDICE STORICO
+       La pioggia recente pesa
+       più di quella vecchia.
+    ================================= */
+    let scorePioggiaRecente = 0;
+    if(pioggia3 >= 15){
+        scorePioggiaRecente += 35;
+    }
+    else if(pioggia3 >= 8){
+        scorePioggiaRecente += 25;
+    }
+    else if(pioggia3 >= 3){
+        scorePioggiaRecente += 12;
+    }
+    if(pioggia7 >= 25){
+        scorePioggiaRecente += 20;
+    }
+    else if(pioggia7 >= 15){
+        scorePioggiaRecente += 12;
+    }
+    else if(pioggia7 >= 8){
+        scorePioggiaRecente += 6;
+    }
+    /* ================================
+       UMIDITÀ
+    ================================= */
+    let scoreUmidita = 0;
+    if(umiditaMedia >= 85){
+        scoreUmidita = 20;
+    }
+    else if(umiditaMedia >= 75){
+        scoreUmidita = 15;
+    }
+    else if(umiditaMedia >= 65){
+        scoreUmidita = 8;
+    }
+    /* ================================
+       TEMPERATURA
+       Fascia indicativa.
+    ================================= */
+    let scoreTemperatura = 0;
+    if(
+        tempMedia >= 10 &&
+        tempMedia <= 18
+    ){
+        scoreTemperatura = 15;
+    }
+    else if(
+        tempMedia >= 8 &&
+        tempMedia <= 21
+    ){
+        scoreTemperatura = 8;
+    }
+    /* ================================
+       ALTITUDINE
+       Peso molto leggero:
+       non vogliamo far decidere
+       l'altitudine da sola.
+    ================================= */
+    let scoreAltitudine = 0;
+    if(altitudine !== null){
+        if(
+            altitudine >= 500 &&
+            altitudine <= 1200
+        ){
+            scoreAltitudine = 5;
+        }
+        else if(
+            altitudine >= 300 &&
+            altitudine <= 1400
+        ){
+            scoreAltitudine = 3;
+        }
+    }
+    /* ================================
+       INDICE PORCINO
+    ================================= */
+    let indicePorcino =
+    scorePioggiaRecente +
+    scoreUmidita +
+    scoreTemperatura +
+    scoreAltitudine;
+    indicePorcino =
+    clamp(
+        Math.round(indicePorcino),
+        0,
+        100
+    );
+    /* ================================
+       INDICE OVULO
+       Più orientato a temperatura
+       e umidità.
+    ================================= */
+    let indiceOvulo = 0;
+    if(
+        tempMedia >= 14 &&
+        tempMedia <= 21
+    ){
+        indiceOvulo += 40;
+    }
+    else if(
+        tempMedia >= 11 &&
+        tempMedia <= 24
+    ){
+        indiceOvulo += 25;
+    }
+    if(umiditaMedia >= 80){
+        indiceOvulo += 30;
+    }
+    else if(umiditaMedia >= 70){
+        indiceOvulo += 20;
+    }
+    if(pioggia7 >= 15){
+        indiceOvulo += 20;
+    }
+    else if(pioggia7 >= 7){
+        indiceOvulo += 10;
+    }
+    indiceOvulo =
+    clamp(
+        Math.round(indiceOvulo),
+        0,
+        100
+    );
+    /* ================================
+       FINESTRA FUTURA
+       Calcoliamo un punteggio
+       per ogni giorno.
+    ================================= */
+    let punteggiGiornalieri = [];
+    for(
+        let i=0;
+        i<giorniForecast.length;
+        i++
+    ){
+        const pioggia =
+        pioggiaForecast[i] || 0;
+        const umidita =
+        umiditaForecast[i] || 0;
+        const tmax =
+        tempMax[i] || 0;
+        const tmin =
+        tempMin[i] || 0;
+        const tempMediaGiorno =
+        (tmax+tmin)/2;
+        let score = 0;
+        /* pioggia */
+        if(
+            pioggia >= 5 &&
+            pioggia <= 30
+        ){
+            score += 30;
+        }
+        else if(pioggia >= 2){
+            score += 18;
+        }
+        /* umidità */
+        if(umidita >= 85){
+            score += 25;
+        }
+        else if(umidita >= 75){
+            score += 18;
+        }
+        else if(umidita >= 65){
+            score += 8;
+        }
+        /* temperatura */
+        if(
+            tempMediaGiorno >= 10 &&
+            tempMediaGiorno <= 18
+        ){
+            score += 30;
+        }
+        else if(
+            tempMediaGiorno >= 8 &&
+            tempMediaGiorno <= 21
+        ){
+            score += 18;
+        }
+        /* probabilità pioggia */
+        if(probPioggia[i] >= 70){
+            score += 10;
+        }
+        else if(probPioggia[i] >= 40){
+            score += 5;
+        }
+        /* piccolo contributo altitudine */
+        if(
+            altitudine !== null &&
+            altitudine >= 500 &&
+            altitudine <= 1200
+        ){
+            score += 5;
+        }
+        score =
+        clamp(
+            Math.round(score),
+            0,
+            100
+        );
+        punteggiGiornalieri.push(score);
+    }
+    /* ================================
+       MIGLIOR GIORNO
+    ================================= */
+    let migliorIndice =
+    Math.max(...punteggiGiornalieri);
+    let migliorPosizione =
+    punteggiGiornalieri.indexOf(
+        migliorIndice
+    );
+    let migliorGiorno =
+    giorniForecast[migliorPosizione];
+    /* ================================
+       COSTRUZIONE FINESTRA
+    ================================= */
+    let giorniFavorevoli = [];
+    for(
+        let i=0;
+        i<punteggiGiornalieri.length;
+        i++
+    ){
+        if(
+            punteggiGiornalieri[i] >= 65
+        ){
+            giorniFavorevoli.push(
+                giorniForecast[i]
+            );
+        }
+    }
+    let testoFinestra =
+    "🔴 Al momento non emerge una finestra particolarmente favorevole.";
+    if(giorniFavorevoli.length > 0){
+        const primo =
+        formatData(giorniFavorevoli[0]);
+        const ultimo =
+        formatData(
+            giorniFavorevoli[
+                giorniFavorevoli.length-1
+            ]
+        );
+        testoFinestra =
+        `🟢 <b>Finestra favorevole stimata:
+        ${primo} → ${ultimo}</b>`;
+    }
+    /* ================================
+       SEMAFORO
+    ================================= */
+    let semaforo;
+    if(indicePorcino >= 75){
+        semaforo =
+        "🟢🟢 CONDIZIONI MOLTO FAVOREVOLI";
+    }
+    else if(indicePorcino >= 55){
+        semaforo =
+        "🟢 CONDIZIONI INTERESSANTI";
+    }
+    else if(indicePorcino >= 35){
+        semaforo =
+        "🟡 CONDIZIONI DISCRETE";
+    }
+    else{
+        semaforo =
+        "🔴 CONDIZIONI POCO FAVOREVOLI";
+    }
+    /* ================================
+       HTML RISULTATO
+    ================================= */
+    let html = `
+    <h2>${semaforo}</h2>
+    <h3>📍 ${nomeLocalita}</h3>
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="label">
+            Latitudine
+            </div>
+            <div class="value">
+            ${lat.toFixed(6)}
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Longitudine
+            </div>
+            <div class="value">
+            ${lon.toFixed(6)}
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Altitudine
+            </div>
+            <div class="value">
+            ${
+                altitudine !== null
+                ?
+                Math.round(altitudine)+" m"
+                :
+                "N/D"
+            }
+            </div>
+        </div>
+    </div>
+    <h3>🌧️ Situazione recente</h3>
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="label">
+            Pioggia ultimi 3 giorni
+            </div>
+            <div class="value">
+            ${pioggia3.toFixed(1)} mm
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Pioggia ultimi 7 giorni
+            </div>
+            <div class="value">
+            ${pioggia7.toFixed(1)} mm
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Pioggia ultimi 14 giorni
+            </div>
+            <div class="value">
+            ${pioggia14.toFixed(1)} mm
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Pioggia ultimi 20 giorni
+            </div>
+            <div class="value">
+            ${pioggia20.toFixed(1)} mm
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Temperatura media
+            </div>
+            <div class="value">
+            ${tempMedia.toFixed(1)} °C
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Umidità media
+            </div>
+            <div class="value">
+            ${umiditaMedia.toFixed(0)} %
+            </div>
+        </div>
+    </div>
+    <div class="index-box">
+        <div>
+        🍄 <b>Indice Porcino</b>
+        </div>
+        <div class="index-number ${classeIndice(indicePorcino)}">
+        ${indicePorcino}/100
+        </div>
+    </div>
+    <div class="index-box">
+        <div>
+        🥚 <b>Indice Ovulo</b>
+        </div>
+        <div class="index-number ${classeIndice(indiceOvulo)}">
+        ${indiceOvulo}/100
+        </div>
+    </div>
+    <hr>
+    <h3>🔮 Previsione prossimi 7 giorni</h3>
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="label">
+            Pioggia prevista
+            </div>
+            <div class="value">
+            ${pioggiaFutura.toFixed(1)} mm
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Giorno migliore
+            </div>
+            <div class="value">
+            ${formatData(migliorGiorno)}
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="label">
+            Indice giorno migliore
+            </div>
+            <div class="value good">
+            ${migliorIndice}/100
+            </div>
+        </div>
+    </div>
+    <div class="finestra">
+    ${testoFinestra}
+    <br><br>
+    ⭐ Giorno più interessante:
+    <b>${formatData(migliorGiorno)}</b>
+    con indice
+    <b>${migliorIndice}/100</b>
+    </div>
+    <h3>📅 Analisi giorno per giorno</h3>
+    <div class="forecast-grid">
+    `;
+    /* ================================
+       CARD PREVISIONI
+    ================================= */
+    for(
+        let i=0;
+        i<giorniForecast.length;
+        i++
+    ){
+        const best =
+        i === migliorPosizione
+        ?
+        "best"
+        :
+        "";
+        html += `
+        <div class="day-card ${best}">
+            <div class="date">
+            ${nomeGiorno(giorniForecast[i])}
+            <br>
+            ${formatData(giorniForecast[i])}
+            </div>
+            <hr>
+            <div class="rain">
+            🌧️
+            ${(pioggiaForecast[i] || 0).toFixed(1)}
+            mm
+            </div>
+            <div>
+            💧
+            ${(umiditaForecast[i] || 0).toFixed(0)}
+            %
+            </div>
+            <div class="temp">
+            🌡️
+            ${(tempMin[i] || 0).toFixed(1)}
+            /
+            ${(tempMax[i] || 0).toFixed(1)}
+            °C
+            </div>
+            <div>
+            ☔
+            ${probPioggia[i] || 0}%
+            </div>
+            <hr>
+            <div class="score">
+            ${punteggiGiornalieri[i]}/100
+            </div>
+        </div>
+        `;
+    }
+    html += `
+    </div>
+    <p class="legend">
+    🟢 ≥75 condizioni molto interessanti •
+    🟡 50–74 condizioni intermedie •
+    🔴 &lt;50 condizioni deboli
+    </p>
+    <p style="font-size:13px;color:#777">
+    ⚠️ L'indice rappresenta un modello indicativo delle
+    condizioni meteorologiche favorevoli alla fruttificazione.
+    Non costituisce una previsione certa della nascita dei funghi.
+    </p>
+    `;
+    document.getElementById("risultato").innerHTML =
+    html;
+    /* ================================
+       GRAFICO
+    ================================= */
+    const labels =
+    [
+        ...giorniStorico,
+        ...giorniForecast
+    ];
+    const pioggiaGrafico =
+    [
+        ...pioggiaStorico,
+        ...pioggiaForecast
+    ];
+    const temperaturaGrafico =
+    [
+        ...temperaturaStorico,
+        ...tempMax.map(
+            (v,i) =>
+            (
+                v + tempMin[i]
+            ) / 2
+        )
+    ];
+    const backgroundPioggia =
+    labels.map(
+        (_,i) =>
+        i < giorniStorico.length
+        ?
+        "rgba(33,150,243,0.45)"
+        :
+        "rgba(76,175,80,0.45)"
+    );
+    const ctx =
+    document.getElementById("grafico");
+    if(grafico){
+        grafico.destroy();
+    }
+    grafico = new Chart(
+        ctx,
+        {
+            type:"bar",
+            data:{
+                labels:labels,
+                datasets:[
+                    {
+                        label:"Pioggia mm",
+                        data:pioggiaGrafico,
+                        backgroundColor:
+                        backgroundPioggia,
+                        borderColor:
+                        "#1565c0",
+                        borderWidth:1,
+                        yAxisID:"y"
+                    },
+                    {
+                        label:"Temperatura °C",
+                        data:temperaturaGrafico,
+                        type:"line",
+                        borderColor:"#d32f2f",
+                        backgroundColor:
+                        "rgba(211,47,47,0.1)",
+                        tension:0.35,
+                        fill:false,
+                        yAxisID:"y1"
+                    }
+                ]
+            },
+            options:{
+                responsive:true,
+                interaction:{
+                    mode:"index",
+                    intersect:false
+                },
+                scales:{
+                    y:{
+                        beginAtZero:true,
+                        position:"left",
+                        title:{
+                            display:true,
+                            text:"Pioggia mm"
+                        }
+                    },
+                    y1:{
+                        position:"right",
+                        title:{
+                            display:true,
+                            text:"Temperatura °C"
+                        },
+                        grid:{
+                            drawOnChartArea:false
+                        }
+                    }
+                }
+            }
+        }
+    );
 }
 catch(error){
-
-console.error(error);
-
-document.getElementById("risultato").innerHTML =
-
-"❌ Errore nel recupero dati meteo" + error.message;
-
+    console.error(error);
+    document.getElementById("risultato").innerHTML =
+    `
+    <h3>❌ Errore</h3>
+    <p>
+    Non è stato possibile recuperare
+    i dati meteorologici.
+    </p>
+    <p>
+    ${error.message}
+    </p>
+    `;
+}
 }
 
-}
-
-</script>
-
-</body>
-</html>
+</script> </body> </html>
