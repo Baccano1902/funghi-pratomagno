@@ -451,7 +451,7 @@ async function calcolaLocalita(loc){
  const best=Math.max(...dailyOverall),bi=dailyOverall.indexOf(best);
 
  return {
-   localita:loc,oggi,terrain,hist,fore,
+   localita:loc,oggi,terreno,hist,fore,habitat
    giorniStorico:g,pioggeStorico:p,temperatureStorico:t,umiditaStorico:u,
    pioggia7,pioggia14,pioggia45,tempMedia7,umiditaMedia7,
    eventi,evento,habitat,habitatScores,habitatForecasts,habitatOrdinati,habitatMigliore,
@@ -611,7 +611,7 @@ function offsetCoord(lat,lon,dx,dy){
 }
 async function calcolaCella(base,dx,dy,baseR){
  const p=offsetCoord(base.lat,base.lon,dx,dy);
- const terr=await recuperaTerreno(p.lat,p.lon);
+ const terreno=await recuperaTerreno(p.lat,p.lon);
  const hab=await rilevaHabitat(p.lat,p.lon);
  const fake={evento:baseR.evento,terreno:terr,tempMedia7:baseR.tempMedia7,umiditaMedia7:baseR.umiditaMedia7};
  const scores=Object.keys(HABITAT).map(h=>[h,calcolaHabitatScore(fake,h,baseR.domani)]);
