@@ -3,667 +3,2988 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🍄 Radar Buttata Porcini - Valdarno V2.4</title>
+<title>🍄 Radar Buttata Porcini - Valdarno</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<!-- Leaflet per la mappa -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Chart.js per i grafici -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 *{box-sizing:border-box}
+
 body{
     font-family:Arial,sans-serif;
     background-image:url("https://images.unsplash.com/photo-1506744038136-46273834b3fb");
-    background-size:cover;background-position:center;background-attachment:fixed;
-    margin:0;padding:15px;color:#263238
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    margin:0;
+    padding:15px;
+    color:#263238;
 }
-.container{max-width:1250px;margin:auto;background:rgba(255,255,255,.96);padding:22px;border-radius:20px;box-shadow:0 0 30px rgba(0,0,0,.16);backdrop-filter:blur(5px)}
-h1{text-align:center;color:#1b5e20;margin:5px 0}
-h2,h3{color:#244b2a}
-.subtitle{text-align:center;font-size:17px;color:#555;margin-top:5px}
-.controls,.panel{background:#f4f8f4;padding:18px;border-radius:14px;margin:20px 0}
-select,input,button{width:100%;padding:12px;border-radius:9px;font-size:15px}
-select,input{border:1px solid #ccc;background:#fff}
-button{background:#1b5e20;color:#fff;border:none;cursor:pointer;font-weight:bold;margin-top:8px}
-button:hover{background:#2e7d32}button:disabled{opacity:.65;cursor:wait}
-.secondary{background:#546e7a}.secondary:hover{background:#455a64}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:15px 0}
-.card{background:#fff;border-radius:11px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.label{color:#666;font-size:12px}.value{font-size:20px;font-weight:bold;margin-top:5px}
-.result{margin-top:20px;padding:20px;background:#f4fff4;border-radius:14px}
-.status{padding:18px;border-radius:13px;margin:15px 0;background:#e8f5e9}
-.status.medium{background:#fff8e1}.status.bad{background:#ffebee}
-.good{color:#2e7d32}.medium{color:#f57c00}.bad{color:#c62828}
-.index{font-size:38px;font-weight:bold}
-#map{width:100%;height:550px;border-radius:15px;overflow:hidden;margin-top:15px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
-.map-legend{background:#fff;padding:10px 12px;line-height:1.5;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.2)}
-.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px}
-.green{background:#2e7d32}.yellow{background:#f9a825}.red{background:#c62828}
-.rank{background:#fff;border-radius:13px;padding:15px;margin:9px 0;box-shadow:0 2px 7px rgba(0,0,0,.08);border-left:7px solid #78909c}
-.rank.greenBorder{border-left-color:#2e7d32}.rank.yellowBorder{border-left-color:#f9a825}.rank.redBorder{border-left-color:#c62828}
-.rankHeader{display:flex;justify-content:space-between;gap:10px}.rankScore{font-size:27px;font-weight:bold}
-.progress{height:10px;background:#eceff1;border-radius:10px;overflow:hidden;margin-top:10px}.bar{height:100%;background:#2e7d32}
-.habitatGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
-.habitatCard{background:#fff;border-radius:12px;padding:12px;border:1px solid #e1e7e2}
-.habitatTop{display:flex;justify-content:space-between;gap:8px}.habitatScore{font-size:24px;font-weight:bold}
-.mini{font-size:12px;color:#666;line-height:1.45}.tag{display:inline-block;padding:4px 8px;border-radius:15px;background:#eceff1;font-size:12px;margin:3px}
-.timeline{display:flex;gap:3px;margin-top:8px;overflow:hidden}.seg{height:12px;flex:1;border-radius:5px;background:#cfd8dc}.seg.best{background:#66bb6a}.seg.near{background:#fbc02d}.seg.now{outline:3px solid #263238;outline-offset:1px}
-.forecast{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px;margin-top:15px}.day{background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.08)}.day.best{border:3px solid #2e7d32;background:#e8f5e9}
-.explain{background:#fafafa;border-radius:12px;padding:15px;margin-top:15px;line-height:1.55}
-.warning{font-size:12px;color:#666;margin-top:18px;line-height:1.5}
-canvas{margin-top:25px}
-#gridMap{height:420px;border-radius:14px;margin-top:12px}
-.small{font-size:12px;color:#777}
-hr{border:0;border-top:1px solid #ddd;margin:22px 0}
-.popupScore{font-size:20px;font-weight:bold}
-.observation{background:#fff;border-radius:10px;padding:10px;margin:7px 0;border-left:5px solid #78909c}
-.kpi{font-size:13px;color:#555}
-@media(max-width:600px){body{padding:8px}.container{padding:14px}#map{height:430px}.rankHeader{align-items:flex-start}}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    background:rgba(255,255,255,.96);
+    padding:22px;
+    border-radius:20px;
+    box-shadow:0 0 30px rgba(0,0,0,.16);
+    backdrop-filter:blur(5px);
+}
+
+h1{
+    text-align:center;
+    color:#1b5e20;
+    margin:5px 0;
+}
+
+.subtitle{
+    text-align:center;
+    font-size:17px;
+    color:#555;
+    margin-top:5px;
+}
+
+.controls{
+    background:#f4f8f4;
+    padding:18px;
+    border-radius:14px;
+    margin:20px 0;
+}
+
+select,button{
+    width:100%;
+    padding:13px;
+    border-radius:9px;
+    font-size:16px;
+}
+
+select{
+    border:1px solid #ccc;
+    background:white;
+    margin-bottom:12px;
+}
+
+button{
+    background:#1b5e20;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{background:#2e7d32}
+button:disabled{opacity:.65;cursor:wait}
+
+.secondary-button{
+    background:#546e7a;
+    margin-top:8px;
+}
+
+.secondary-button:hover{background:#455a64}
+
+.result{
+    margin-top:20px;
+    padding:20px;
+    background:#f4fff4;
+    border-radius:14px;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(165px,1fr));
+    gap:12px;
+    margin:15px 0;
+}
+
+.info-card{
+    background:white;
+    border-radius:11px;
+    padding:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.label{color:#666;font-size:13px}
+.value{font-size:20px;font-weight:bold;margin-top:5px}
+
+.index-box{
+    margin-top:15px;
+    padding:18px;
+    border-radius:12px;
+    background:#fff;
+    border-left:7px solid #1b5e20;
+}
+
+.index-number{
+    font-size:38px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+.good{color:#2e7d32}
+.medium{color:#f57c00}
+.bad{color:#c62828}
+
+.status{
+    padding:18px;
+    border-radius:13px;
+    margin:15px 0;
+    background:#e8f5e9;
+}
+
+.status.good{background:#e8f5e9}
+.status.medium{background:#fff8e1}
+.status.bad{background:#ffebee}
+
+.countdown{
+    font-size:27px;
+    font-weight:bold;
+    margin:8px 0;
+}
+
+.finestra{
+    padding:17px;
+    border-radius:12px;
+    background:#e8f5e9;
+    margin-top:15px;
+}
+
+.finestra.autunno{background:#fff8e1}
+
+.event-card{
+    background:white;
+    border-radius:12px;
+    padding:16px;
+    margin-top:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    border-left:6px solid #78909c;
+}
+
+.event-card.active{border-left-color:#2e7d32}
+
+.event-title{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    margin:4px 4px 0 0;
+    background:#eceff1;
+}
+
+.section-title{
+    margin-top:28px;
+}
+
+#map{
+    width:100%;
+    height:500px;
+    border-radius:15px;
+    overflow:hidden;
+    margin-top:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+
+.map-legend{
+    background:white;
+    padding:10px 12px;
+    line-height:1.6;
+    border-radius:8px;
+    box-shadow:0 1px 6px rgba(0,0,0,.2);
+}
+
+.legend-dot{
+    display:inline-block;
+    width:13px;
+    height:13px;
+    border-radius:50%;
+    margin-right:5px;
+    vertical-align:middle;
+}
+
+.dot-green{background:#2e7d32}
+.dot-yellow{background:#f9a825}
+.dot-red{background:#c62828}
+.dot-gray{background:#78909c}
+
+.ranking{
+    margin-top:18px;
+}
+
+.rank-card{
+    background:white;
+    border-radius:13px;
+    padding:15px;
+    margin:9px 0;
+    box-shadow:0 2px 7px rgba(0,0,0,.08);
+    border-left:7px solid #78909c;
+}
+
+.rank-card.green{border-left-color:#2e7d32}
+.rank-card.yellow{border-left-color:#f9a825}
+.rank-card.red{border-left-color:#c62828}
+
+.rank-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.rank-position{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.rank-score{
+    font-size:27px;
+    font-weight:bold;
+}
+
+.rank-meta{
+    color:#555;
+    font-size:14px;
+    margin-top:6px;
+}
+
+.progress{
+    width:100%;
+    height:10px;
+    background:#eceff1;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-bar{
+    height:100%;
+    background:#2e7d32;
+}
+
+.rank-card.yellow .progress-bar{background:#f9a825}
+.rank-card.red .progress-bar{background:#c62828}
+
+.forecast-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(125px,1fr));
+    gap:8px;
+    margin-top:15px;
+}
+
+.day-card{
+    background:white;
+    border-radius:10px;
+    padding:10px;
+    text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.day-card.best{
+    border:3px solid #2e7d32;
+    background:#e8f5e9;
+}
+
+.day-card .date{
+    font-weight:bold;
+    color:#1b5e20;
+}
+
+.rain{color:#1565c0}
+.humidity{color:#00838f}
+.temp{color:#d84315}
+
+.score{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:7px;
+}
+
+.explain{
+    background:#fafafa;
+    border-radius:12px;
+    padding:15px;
+    margin-top:15px;
+    line-height:1.55;
+}
+
+.loading{
+    text-align:center;
+    font-size:18px;
+    padding:25px;
+}
+
+.warning{
+    font-size:13px;
+    color:#666;
+    margin-top:18px;
+    line-height:1.5;
+}
+
+canvas{
+    margin-top:25px;
+}
+
+.legend{
+    font-size:13px;
+    color:#666;
+    margin-top:10px;
+}
+
+hr{
+    border:0;
+    border-top:1px solid #ddd;
+    margin:22px 0;
+}
+
+.timeline-mini{margin-top:12px;background:#f7f9f7;border-radius:10px;padding:10px;overflow:hidden}
+.timeline-track{display:flex;align-items:center;gap:3px;min-width:620px;font-size:11px}
+.timeline-segment{height:11px;border-radius:5px;background:#cfd8dc;flex:1;position:relative}
+.timeline-segment.green{background:#66bb6a}
+.timeline-segment.yellow{background:#fbc02d}
+.timeline-segment.red{background:#ef9a9a}
+.timeline-segment.now{outline:3px solid #263238;outline-offset:1px}
+.timeline-marker{display:flex;flex-direction:column;align-items:center;min-width:34px;font-weight:bold}
+.timeline-marker .icon{font-size:18px;line-height:20px}
+.timeline-label{margin-top:5px;font-size:11px;color:#555}
+.timeline-now{margin-top:8px;font-size:12px;font-weight:bold}
+.timeline-note{margin-top:5px;font-size:12px;color:#555}
+.rank-timeline{overflow-x:auto;padding-bottom:2px}
+.event-mini{margin-top:8px;font-size:13px;line-height:1.45}
+.small-note{
+    font-size:12px;
+    color:#777;
+}
+
+.popup-score{
+    font-size:20px;
+    font-weight:bold;
+}
+
+@media(max-width:600px){
+    body{padding:8px}
+    .container{padding:14px}
+    h1{font-size:25px}
+    #map{height:430px}
+    .rank-header{align-items:flex-start}
+}
 </style>
 </head>
 
 <body>
+
 <div class="container">
-<h1>🍄 Radar Buttata Porcini — V2.4</h1>
-<p class="subtitle">Valdarno • Pratomagno • habitat + terreno + meteo + calibrazione</p>
+
+<h1>🍄 Radar Buttata Porcini</h1>
+
+<p class="subtitle">
+    Valdarno • Pratomagno • Monticiano • Siena
+</p>
 
 <div class="controls">
-<select id="localita"></select>
-<div class="grid2">
-<button id="analizzaBtn" onclick="analizzaLocalitaSelezionata()">🔍 Analizza località</button>
-<button id="radarBtn" class="secondary" onclick="analizzaTutteLeLocalita()">🗺️ Aggiorna Radar + Classifica</button>
+
+    <select id="localita">
+        <option value="43.648210837035236,11.672634310976488">Pozza Nera</option>
+        <option value="43.61493048759856,11.69405168018871">Monte Lori Pic Nic</option>
+        <option value="43.60871375792392,11.705157764789897">Monte Lori Campeggio</option>
+        <option value="43.620597527331924,11.657856370237369">Tre Fonti</option>
+        <option value="43.619602322842674,11.65123576223233">Trappola</option>
+        <option value="43.61273877340515,11.656966725681125">Trevane</option>
+        <option value="43.50398069862869,11.545716077300723">Cocioni</option>
+        <option value="43.48898753383693,11.512202978459452">Moncioni</option>
+        <option value="43.52542199979008,11.522390226279295">Cavriglia Quercie</option>
+        <option value="43.52070302717631,11.502276149076717">Cavriglia Alta</option>
+        <option value="43.46761467459521,11.670888620816104">Pergine Valdarno</option>
+        <option value="43.53632378809326,11.625183736328342">Tasso Lore</option>
+    </select>
+
+    <button id="analizzaBtn" onclick="analizzaLocalitaSelezionata()">
+        🔍 Analizza Località
+    </button>
+
+    <button
+        id="radarBtn"
+        class="secondary-button"
+        onclick="analizzaTutteLeLocalita()">
+        🗺️ Aggiorna Mappa Radar + Classifica
+    </button>
+
 </div>
-<div class="grid2">
-<button class="secondary" onclick="mostraGrigliaSelezionata()">🧭 Analizza griglia 250 m della località</button>
-<button class="secondary" onclick="centraSelezionata()">📍 Centra mappa</button>
-</div>
-<p class="small">
-V2.4: meteo, quota, pendenza, esposizione, habitat forestale regionale, griglia locale e calibrazione con osservazioni.
-</p>
-</div>
+
+
+<!-- ======================================================
+     RADAR GENERALE
+     ====================================================== -->
 
 <div id="radarGenerale" class="result">
-<h2>🗺️ Mappa Radar</h2>
-<div id="radarStato" class="small">Nessuna analisi ancora eseguita.</div>
-<div id="map"></div>
-<div id="classifica"><p class="small">La classifica apparirà dopo l'analisi.</p></div>
+
+    <h2>
+    <svg width="30" height="30" viewBox="0 0 64 64"
+         aria-hidden="true"
+         style="vertical-align:-7px;margin-right:6px">
+        <circle cx="32" cy="32" r="27"
+                fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="32" cy="32" r="18"
+                fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="32" cy="32" r="4" fill="currentColor"/>
+        <path d="M32 32 L52 18"
+              fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round"/>
+        <path d="M10 32 A22 22 0 0 1 32 10"
+              fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round"/>
+    </svg>
+    Mappa Radar Buttata
+</h2>
+
+    <p>
+        Premi <b>“Aggiorna Mappa Radar + Classifica”</b> per confrontare
+        tutte le località contemporaneamente.
+    </p>
+
+    <div id="radarStato" class="small-note">
+        Nessuna analisi ancora eseguita.
+    </div>
+
+    <div id="map"></div>
+
+    <div class="ranking">
+        <h3>🏆 Dove conviene andare domani?</h3>
+
+    <p class="small-note">
+        La classifica usa il punteggio previsto per domani.
+        Sotto ogni località trovi la timeline della possibile buttata:
+        🌧️ giorno 0 → 🟢 12–14 giorni → 🟡 15–18 giorni.
+        Il bordo scuro evidenzia il giorno attuale del countdown.
+    </p>
+
+        <div id="classifica">
+            <p class="small-note">
+                La classifica apparirà dopo l'analisi.
+            </p>
+        </div>
+    </div>
+
 </div>
+
+
+<!-- ======================================================
+     ANALISI LOCALITÀ
+     ====================================================== -->
 
 <div id="risultato" class="result">
-<h2>📍 Analisi singola</h2>
-<p>Seleziona una località e premi Analizza.</p>
-</div>
 
-<div id="grigliaPanel" class="panel">
-<h2>🧭 Micro-radar territoriale</h2>
-<p class="small">
-La griglia usa celle di circa 250 m. Per ogni cella il modello combina quota, pendenza,
-esposizione, habitat e condizioni meteo della località di riferimento.
-</p>
-<div id="gridStatus" class="small">Nessuna griglia calcolata.</div>
-<div id="gridMap"></div>
-<div id="gridRanking"></div>
-</div>
+    <h2>📍 Analisi singola località</h2>
 
-<div class="panel">
-<h2>🧠 Calibrazione con le tue osservazioni</h2>
-<p class="small">
-Questa funzione non pretende di "imparare la biologia" automaticamente: registra le tue uscite
-e applica una correzione prudente per habitat, usando solo i dati salvati nel browser.
-</p>
-<div class="grid2">
-<select id="obsLocalita"></select>
-<select id="obsHabitat"></select>
-</div>
-<div class="grid2">
-<select id="obsEsito">
-<option value="1">🍄 Trovato / buttata presente</option>
-<option value="0">❌ Non trovato</option>
-</select>
-<input id="obsQuantita" type="number" min="0" max="999" step="1" placeholder="Numero indicativo (opzionale)">
-</div>
-<input id="obsNota" placeholder="Nota: versante, quota, bosco, condizioni...">
-<button onclick="salvaOsservazione()">💾 Salva osservazione</button>
-<div id="calibrazione"></div>
+    <p>
+        Seleziona una località e premi <b>Analizza Località</b>,
+        oppure aggiorna direttamente il radar generale.
+    </p>
+
 </div>
 
 <canvas id="grafico"></canvas>
 
-<div class="warning">
-⚠️ Il radar è uno strumento sperimentale. Le informazioni cartografiche regionali sono utilizzate
-come supporto territoriale e possono avere limiti di scala/aggiornamento. La fruttificazione dei
-funghi non è garantibile dal meteo o dalla cartografia. Rispetta sempre proprietà, divieti,
-regolamenti locali e norme sulla raccolta.
-</div>
 </div>
 
+
 <script>
+
 /* =========================================================
-   V2.4 — ARCHITETTURA
-   =========================================================
-   V2.0 = habitat + meteo
-   V2.1 = quota + pendenza + esposizione
-   V2.2 = habitat da WMS Regione Toscana
-   V2.3 = griglia 250 m
-   V2.4 = osservazioni locali + calibrazione prudente
+   DATI LOCALITÀ
    ========================================================= */
 
 const LOCALITA = [
- {nome:"Pozza Nera",lat:43.648210837035236,lon:11.672634310976488},
- {nome:"Monte Lori Pic Nic",lat:43.61493048759856,lon:11.69405168018871},
- {nome:"Monte Lori Campeggio",lat:43.60871375792392,lon:11.705157764789897},
- {nome:"Tre Fonti",lat:43.620597527331924,lon:11.657856370237369},
- {nome:"Trappola",lat:43.619602322842674,lon:11.65123576223233},
- {nome:"Trevane",lat:43.61273877340515,lon:11.656966725681125},
- {nome:"Cocioni",lat:43.50398069862869,lon:11.545716077300723},
- {nome:"Moncioni",lat:43.48898753383693,lon:11.512202978459452},
- {nome:"Cavriglia Quercie",lat:43.52542199979008,lon:11.522390226279295},
- {nome:"Cavriglia Alta",lat:43.52070302717631,lon:11.502276149076717},
- {nome:"Pergine Valdarno",lat:43.46761467459521,lon:11.670888620816104},
- {nome:"Tasso Lore",lat:43.53632378809326,lon:11.625183736328342},
- {nome:"Pontenano",lat:43.60065850517485,lon:11.727703551675628}
+
+    {
+        nome:"Pozza Nera",
+        lat:43.648210837035236,
+        lon:11.672634310976488
+    },
+
+    {
+        nome:"Monte Lori Pic Nic",
+        lat:43.61493048759856,
+        lon:11.69405168018871
+    },
+
+    {
+        nome:"Monte Lori Campeggio",
+        lat:43.60871375792392,
+        lon:11.705157764789897
+    },
+
+    {
+        nome:"Tre Fonti",
+        lat:43.620597527331924,
+        lon:11.657856370237369
+    },
+
+    {
+        nome:"Trappola",
+        lat:43.619602322842674,
+        lon:11.65123576223233
+    },
+
+    {
+        nome:"Trevane",
+        lat:43.61273877340515,
+        lon:11.656966725681125
+    },
+
+    {
+        nome:"Cocioni",
+        lat:43.50398069862869,
+        lon:11.545716077300723
+    },
+
+    {
+        nome:"Moncioni",
+        lat:43.48898753383693,
+        lon:11.512202978459452
+    },
+
+    {
+        nome:"Cavriglia Quercie",
+        lat:43.52542199979008,
+        lon:11.522390226279295
+    },
+
+    {
+        nome:"Cavriglia Alta",
+        lat:43.52070302717631,
+        lon:11.502276149076717
+    },
+
+    {
+        nome:"Pergine Valdarno",
+        lat:43.46761467459521,
+        lon:11.670888620816104
+    },
+
+    {
+        nome:"Tasso Lore",
+        lat:43.53632378809326,
+        lon:11.625183736328342
+    }
+
 ];
 
-const HABITAT = {
- quercia:{nome:"Quercia",icon:"🌳",ritardo:3,finestra:[3,8],temp:[11,20],umidita:72,bonus:0},
- castagno:{nome:"Castagno",icon:"🌰",ritardo:4,finestra:[4,9],temp:[11,19],umidita:75,bonus:0},
- faggio:{nome:"Faggio",icon:"🌳",ritardo:5,finestra:[5,10],temp:[9,17],umidita:80,bonus:0},
- abete:{nome:"Abete",icon:"🌲",ritardo:6,finestra:[6,12],temp:[8,16],umidita:82,bonus:0},
- scopa:{nome:"Scopa / Cespuglieto",icon:"🌿",ritardo:3,finestra:[3,7],temp:[10,21],umidita:65,bonus:0}
-};
 
-const WMS = {
- url:"https://www502.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsucs&map_resolution=91&language=ita&",
- layers:{
-   quercia:["rt_ucs.idift.rt.503","rt_ucs.idvegfor.rt.3","rt_ucs.idift.rt.504"],
-   castagno:["rt_ucs.idift.rt.502","rt_ucs.idvegfor.rt.6","rt_ucs.idift.rt.525","rt_ucs.idift.rt.526"],
-   faggio:["rt_ucs.idift.rt.501","rt_ucs.idvegfor.rt.8"],
-   abete:["rt_ucs.idift.rt.507","rt_ucs.idvegfor.rt.9"],
-   scopa:["rt_ucs.idift.rt.521","rt_ucs.idift.rt.522","rt_ucs.idift.rt.523","rt_ucs.idift.rt.524"]
- }
-};
+/* =========================================================
+   IMPOSTAZIONI MODELLO
+   ========================================================= */
 
 const MODELLO = {
- giorniStorico:45,
- pioggiaEventoMin:15,
- forecastDays:14,
- gridStepMeters:250,
- gridRadius:1,
- meteoMax:35,
- terrenoMax:20,
- habitatMax:30,
- microclimaMax:15
+
+    giorniStorico:45,
+
+    pioggiaEventoMin:15,
+
+    estateMin:12,
+    estateMax:14,
+
+    autunnoMin:15,
+    autunnoMax:18
+
 };
 
-let mappa=null,gridMap=null,markerLayer=null,gridLayer=null,grafico=null,risultatiRadar=[];
 
-/* ---------- utility ---------- */
-function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
-function valore(v){return v===null||v===undefined||Number.isNaN(Number(v))?null:Number(v)}
-function media(a){const x=a.map(valore).filter(v=>v!==null);return x.length?x.reduce((p,c)=>p+c,0)/x.length:null}
-function mediaUltimi(a,n){return media(a.slice(Math.max(0,a.length-n)))}
-function iso(d){const x=new Date(d);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")}
-function addDays(s,n){const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d)}
-function diffDays(a,b){return Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/86400000)}
-function fmt(s){return new Date(s+"T00:00:00").toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit"})}
-function fmtFull(s){return new Date(s+"T00:00:00").toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"numeric"})}
-function dayName(s){return ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"][new Date(s+"T00:00:00").getDay()]}
-function classe(n){return n>=75?"good":n>=50?"medium":"bad"}
-function border(n){return n>=75?"greenBorder":n>=50?"yellowBorder":"redBorder"}
-function color(n){return n>=75?"#2e7d32":n>=50?"#f9a825":"#c62828"}
-function testo(n){return n>=85?"🟢🟢 MOLTO INTERESSANTE":n>=75?"🟢 FINESTRA INTERESSANTE":n>=50?"🟡 DA MONITORARE":"🔴 POCO FAVOREVOLE"}
-function rad(a){return a*Math.PI/180}
-function deg(a){return (a+360)%360}
-function bearingName(a){
- const dirs=["N","NE","E","SE","S","SO","O","NO"];
- return dirs[Math.round(a/45)%8];
-}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+/* =========================================================
+   VARIABILI GLOBALI
+   ========================================================= */
 
-/* ---------- localStorage / observations ---------- */
-function getObs(){try{return JSON.parse(localStorage.getItem("porcini_obs_v24")||"[]")}catch(e){return[]}}
-function saveObs(a){localStorage.setItem("porcini_obs_v24",JSON.stringify(a))}
-function habitatCalibration(key){
- const obs=getObs().filter(o=>o.habitat===key);
- if(!obs.length)return 0;
- const success=obs.reduce((s,o)=>s+Number(o.esito),0)/obs.length;
- return clamp((success-.5)*20,-10,10);
-}
-function renderCalibration(){
- const el=document.getElementById("calibrazione"),obs=getObs();
- if(!obs.length){el.innerHTML='<p class="small">Nessuna osservazione salvata.</p>';return}
- let html="<h3>📊 Calibrazione attuale</h3>";
- Object.keys(HABITAT).forEach(k=>{
-   const n=obs.filter(o=>o.habitat===k);
-   if(!n.length)return;
-   const ok=n.reduce((s,o)=>s+Number(o.esito),0);
-   html+=`<div class="observation"><b>${HABITAT[k].icon} ${HABITAT[k].nome}</b> — ${ok}/${n.length} positive • correzione <b>${habitatCalibration(k)>=0?"+":""}${habitatCalibration(k).toFixed(1)}</b></div>`;
- });
- html+="<h3>📝 Ultime osservazioni</h3>";
- obs.slice(-8).reverse().forEach(o=>{
-   html+=`<div class="observation">${o.esito?"🍄":"❌"} <b>${escapeHtml(o.localita)}</b> • ${HABITAT[o.habitat]?.icon||""} ${HABITAT[o.habitat]?.nome||o.habitat} • ${fmtFull(o.data)}${o.quantita!==""?` • n=${o.quantita}`:""}<br><span class="small">${escapeHtml(o.nota||"")}</span></div>`;
- });
- el.innerHTML=html;
-}
-function salvaOsservazione(){
- const sel=document.getElementById("obsLocalita"),obs=getObs();
- obs.push({
-   data:iso(new Date()),
-   localita:sel.options[sel.selectedIndex].text,
-   habitat:document.getElementById("obsHabitat").value,
-   esito:Number(document.getElementById("obsEsito").value),
-   quantita:document.getElementById("obsQuantita").value,
-   nota:document.getElementById("obsNota").value
- });
- saveObs(obs);document.getElementById("obsNota").value="";document.getElementById("obsQuantita").value="";
- renderCalibration();
- alert("Osservazione salvata nel browser.");
+let grafico=null;
+let mappa=null;
+let markerLayer=null;
+let risultatiRadar=[];
+
+
+/* =========================================================
+   FUNZIONI BASE
+   ========================================================= */
+
+function clamp(numero,min,max){
+    return Math.max(min,Math.min(max,numero));
 }
 
-/* ---------- API meteo / terreno ---------- */
-async function openMeteoJson(url){
- const r=await fetch(url);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()
-}
-async function recuperaTerreno(lat,lon){
- const d=0.0018; /* ~200 m nord/sud */
- const pts=[
-  [lat,lon],[lat+d,lon],[lat-d,lon],[lat,lon+d],[lat,lon-d]
- ];
- const url="https://api.open-meteo.com/v1/elevation?latitude="+pts.map(p=>p[0]).join(",")+"&longitude="+pts.map(p=>p[1]).join(",");
- const j=await openMeteoJson(url),e=j.elevation||[];
- const z=e[0]??null;
- if(z===null)return {elevazione:null,pendenza:null,esposizione:null,esposizioneNome:"N/D"};
- const ns=(e[1]-e[2])/(2*d*111320);
- const ew=(e[3]-e[4])/(2*d*111320*Math.cos(rad(lat)));
- const slope=Math.atan(Math.sqrt(ns*ns+ew*ew))*180/Math.PI;
- const aspect=deg(90-Math.atan2(ns,ew)*180/Math.PI);
- return {elevazione:z,pendenza:slope,esposizione:aspect,esposizioneNome:bearingName(aspect)};
+function classeIndice(indice){
+
+    if(indice>=75) return "good";
+    if(indice>=50) return "medium";
+
+    return "bad";
 }
 
-/* ---------- rain events ---------- */
-function scoreAcqua(p){if(p>=35)return 25;if(p>=28)return 23;if(p>=20)return 20;if(p>=15)return 17;if(p>=10)return 11;if(p>=6)return 6;return 0}
-function scoreShock(s){if(s>=5)return 12;if(s>=4)return 10;if(s>=3)return 8;if(s>=2)return 5;if(s>=1)return 2;return 0}
-function scoreTemp(t){if(t===null)return 0;if(t>=12&&t<=18)return 10;if(t>=10&&t<=21)return 7;if(t>=8&&t<=23)return 4;return 0}
-function scoreHum(h){if(h===null)return 0;if(h>=85)return 8;if(h>=78)return 7;if(h>=70)return 5;if(h>=60)return 2;return 0}
-function trovaEventi(g,p,t){
- const out=[];
- for(let i=1;i<g.length-1;i++){
-  let acc=0;for(let j=Math.max(0,i-1);j<=Math.min(p.length-1,i+1);j++)acc+=valore(p[j])||0;
-  if(acc<MODELLO.pioggiaEventoMin)continue;
-  const prima=valore(t[i-2]),dopo=valore(t[i+1]);
-  const shock=prima!==null&&dopo!==null?prima-dopo:0;
-  const last=out[out.length-1];
-  if(last&&diffDays(last.data,g[i])<4){if(acc>last.pioggia){last.data=g[i];last.pioggia=acc;last.shock=shock}continue}
-  out.push({data:g[i],pioggia:acc,shock});
- }
- return out;
-}
-function eventoRilevante(eventi,oggi){
- let best=null,bs=-1;
- eventi.forEach(e=>{const d=diffDays(e.data,oggi);if(d<0)return;const s=scoreAcqua(e.pioggia)+scoreShock(e.shock);if(s>bs){bs=s;best={...e,giorniTrascorsi:d}}});
- return best;
+function classeRadar(indice){
+
+    if(indice>=75) return "green";
+    if(indice>=50) return "yellow";
+
+    return "red";
 }
 
-/* ---------- habitat WMS ---------- */
-function wmsFeatureInfoUrl(lat,lon,layer){
- const p=L.CRS.EPSG3857.project(L.latLng(lat,lon));
- const m=400, minx=p.x-m,maxx=p.x+m,miny=p.y-m,maxy=p.y+m;
- return WMS.url+
-  "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo"+
-  "&LAYERS="+encodeURIComponent(layer)+
-  "&QUERY_LAYERS="+encodeURIComponent(layer)+
-  "&STYLES=&FORMAT=image/png&TRANSPARENT=true"+
-  "&INFO_FORMAT=text/html&I=50&J=50&WIDTH=101&HEIGHT=101"+
-  "&CRS=EPSG:3857&BBOX="+minx+","+miny+","+maxx+","+maxy;
-}
-async function wmsHit(lat,lon,layer,needle){
- try{
-   const r=await fetch(wmsFeatureInfoUrl(lat,lon,layer));
-   if(!r.ok)return false;
-   const text=(await r.text()).toLowerCase();
-   return text.includes(needle.toLowerCase());
- }catch(e){return false}
-}
-async function rilevaHabitat(lat,lon){
- const checks=[
-  ["quercia","querceti"],["quercia","roverella"],["quercia","cerro"],
-  ["castagno","castagnet"],["faggio","faggio"],["abete","abet"],
-  ["scopa","cespugliet"],["scopa","arbustet"]
- ];
- const hits={quercia:0,castagno:0,faggio:0,abete:0,scopa:0};
- await Promise.all(checks.map(async ([k,n])=>{
-   const layers=WMS.layers[k]||[];
-   for(const layer of layers){if(await wmsHit(lat,lon,layer,n))hits[k]++}
- }));
- const ranked=Object.entries(hits).sort((a,b)=>b[1]-a[1]);
- const top=ranked[0];
- return {hits,primario:top&&top[1]>0?top[0]:null};
+function coloreRadar(indice){
+
+    if(indice>=75) return "#2e7d32";
+    if(indice>=50) return "#f9a825";
+
+    return "#c62828";
 }
 
-/* ---------- habitat score ---------- */
-function timingHabitat(giorni,h){
- const [a,b]=HABITAT[h].finestra;
- if(giorni>=a&&giorni<=b)return 20;
- if(giorni===a-1||giorni===b+1)return 14;
- if(giorni===a-2||giorni===b+2)return 8;
- return 0;
-}
-function scoreQuotaHabitat(z,h){
- if(z===null)return 0;
- const ranges={
-  quercia:[400,950],castagno:[500,1100],faggio:[800,1500],abete:[900,1600],scopa:[350,1100]
- };
- const [a,b]=ranges[h];
- if(z>=a&&z<=b)return 7;
- if(z>=a-150&&z<=b+150)return 4;
- return 1;
-}
-function scoreEsposizione(h,a){
- if(a===null)return 5;
- const good={
-  quercia:[45,90,135,315,0],castagno:[45,90,135,315,0],
-  faggio:[0,45,315,270],abete:[0,45,315,270],scopa:[45,90,135,0,315]
- }[h]||[];
- let best=0;
- good.forEach(x=>{const d=Math.abs(((a-x+540)%360)-180);best=Math.max(best,1-d/180)});
- return Math.round(clamp(best,0,1)*5);
-}
-function scorePendenza(p){
- if(p===null)return 3;
- if(p>=8&&p<=32)return 5;
- if(p<5)return 3;
- if(p<=45)return 4;
- return 1;
-}
-function baseMeteo(r,h,giorni){
- const H=HABITAT[h];
- let s=0;
- if(r.evento){
-   s+=scoreAcqua(r.evento.pioggia)*0.55;
-   s+=scoreShock(r.evento.shock)*0.35;
-   s+=timingHabitat(giorni,h);
- }
- const tm=r.tempMedia7,um=r.umiditaMedia7;
- if(tm!==null){
-   if(tm>=H.temp[0]&&tm<=H.temp[1])s+=7;
-   else if(tm>=H.temp[0]-2&&tm<=H.temp[1]+2)s+=4;
- }
- if(um!==null){
-   if(um>=H.umidita)s+=5;
-   else if(um>=H.umidita-8)s+=3;
- }
- return s;
-}
-function calcolaHabitatScore(r,h,data){
- const giorni=r.evento?diffDays(r.evento.data,data):0;
- let s=baseMeteo(r,h,giorni);
- s+=scoreQuotaHabitat(r.terreno.elevazione,h);
- s+=scoreEsposizione(h,r.terreno.esposizione);
- s+=scorePendenza(r.terreno.pendenza);
- s+=habitatCalibration(h);
- return clamp(Math.round(s),0,100);
-}
-function habitatForecast(r,h){
- return r.giorniForecast.map(d=>calcolaHabitatScore(r,h,d));
+function testoRadar(indice){
+
+    if(indice>=80) return "🟢🟢 MOLTO INTERESSANTE";
+    if(indice>=75) return "🟢 FINESTRA INTERESSANTE";
+    if(indice>=50) return "🟡 DA MONITORARE";
+
+    return "🔴 POCO FAVOREVOLE";
 }
 
-/* ---------- complete locality ---------- */
-async function calcolaLocalita(loc){
- const oggi=iso(new Date()),start=addDays(oggi,-MODELLO.giorniStorico);
- const terrainPromise=recuperaTerreno(loc.lat,loc.lon);
- const histPromise=openMeteoJson(
-  `https://archive-api.open-meteo.com/v1/archive?latitude=${loc.lat}&longitude=${loc.lon}&start_date=${start}&end_date=${oggi}&daily=temperature_2m_mean,precipitation_sum,relative_humidity_2m_mean&timezone=auto`
- );
- const forePromise=openMeteoJson(
-  `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&forecast_days=${MODELLO.forecastDays}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,relative_humidity_2m_mean&timezone=auto`
- );
- const habitatPromise=rilevaHabitat(loc.lat,loc.lon);
- const [terrain,hist,fore,habitat]=await Promise.all([terrainPromise,histPromise,forePromise,habitatPromise]);
+function semaforoIndice(indice){
 
- const g=hist.daily.time,p=hist.daily.precipitation_sum,t=hist.daily.temperature_2m_mean,u=hist.daily.relative_humidity_2m_mean;
- const pioggia7=p.slice(-7).reduce((a,b)=>a+(valore(b)||0),0);
- const pioggia14=p.slice(-14).reduce((a,b)=>a+(valore(b)||0),0);
- const pioggia45=p.reduce((a,b)=>a+(valore(b)||0),0);
- const tempMedia7=mediaUltimi(t,7),umiditaMedia7=mediaUltimi(u,7);
- const eventi=trovaEventi(g,p,t),evento=eventoRilevante(eventi,oggi);
+    if(indice>=80) return "🟢🟢 FINESTRA MOLTO INTERESSANTE";
+    if(indice>=65) return "🟢 CONDIZIONI INTERESSANTI";
+    if(indice>=45) return "🟡 CONDIZIONI INTERMEDIE";
 
- const giorniForecast=fore.daily.time;
- const habitatScores={};
- const habitatForecasts={};
- Object.keys(HABITAT).forEach(h=>{
-   habitatScores[h]=evento?calcolaHabitatScore({evento,terreno:terrain,tempMedia7,umiditaMedia7},h,oggi):0;
-   habitatForecasts[h]=giorniForecast.map(d=>calcolaHabitatScore({evento,terreno:terrain,tempMedia7,umiditaMedia7},h,d));
- });
- const habitatOrdinati=Object.entries(habitatScores).sort((a,b)=>b[1]-a[1]);
- const habitatMigliore=habitatOrdinati[0];
-
- const meteoAttuale=evento?clamp(Math.round(scoreAcqua(evento.pioggia)+scoreShock(evento.shock)+scoreTemp(tempMedia7)+scoreHum(umiditaMedia7)),0,35):clamp(Math.round(scoreTemp(tempMedia7)+scoreHum(umiditaMedia7)),0,35);
- const terrenoScore=clamp(Math.round(scoreQuotaHabitat(terrain.elevazione,habitatMigliore?.[0]||"castagno")+scorePendenza(terrain.pendenza)+scoreEsposizione(habitatMigliore?.[0]||"castagno",terrain.esposizione)+3),0,20);
- const indice=clamp(Math.round((habitatMigliore?.[1]||0)*0.65+meteoAttuale*0.55+terrenoScore*0.55),0,100);
-
- const dailyOverall=giorniForecast.map((d,i)=>{
-   const hs=Object.keys(HABITAT).map(h=>habitatForecasts[h][i]);
-   return Math.max(...hs);
- });
- const domani=addDays(oggi,1),di=giorniForecast.indexOf(domani);
- const indiceDomani=di>=0?dailyOverall[di]:0;
- const best=Math.max(...dailyOverall),bi=dailyOverall.indexOf(best);
-
- return {
-   localita:loc,oggi,terreno,hist,fore,habitat
-   giorniStorico:g,pioggeStorico:p,temperatureStorico:t,umiditaStorico:u,
-   pioggia7,pioggia14,pioggia45,tempMedia7,umiditaMedia7,
-   eventi,evento,habitat,habitatScores,habitatForecasts,habitatOrdinati,habitatMigliore,
-   meteoAttuale,terrenoScore,indice,
-   giorniForecast,pioggeForecast:fore.daily.precipitation_sum,
-   probPioggia:fore.daily.precipitation_probability_max,
-   tempMax:fore.daily.temperature_2m_max,tempMin:fore.daily.temperature_2m_min,
-   umiditaForecast:fore.daily.relative_humidity_2m_mean,
-   dailyOverall,domani,indiceDomani,migliorIndice:best,migliorGiorno:giorniForecast[bi],migliorPosizione:bi
- };
+    return "🔴 CONDIZIONI DEBOLI";
 }
 
-/* ---------- map ---------- */
+function valore(v){
+
+    return v===null ||
+           v===undefined ||
+           Number.isNaN(Number(v))
+        ? null
+        : Number(v);
+}
+
+function nomeGiorno(data){
+
+    const giorni=[
+        "Dom","Lun","Mar","Mer",
+        "Gio","Ven","Sab"
+    ];
+
+    return giorni[
+        new Date(data+"T00:00:00").getDay()
+    ];
+}
+
+function formatData(data){
+
+    return new Date(data+"T00:00:00")
+        .toLocaleDateString(
+            "it-IT",
+            {
+                day:"2-digit",
+                month:"2-digit"
+            }
+        );
+}
+
+function formatDataCompleta(data){
+
+    return new Date(data+"T00:00:00")
+        .toLocaleDateString(
+            "it-IT",
+            {
+                day:"2-digit",
+                month:"2-digit",
+                year:"numeric"
+            }
+        );
+}
+
+function dataLocaleISO(data){
+
+    const d=new Date(data);
+
+    return d.getFullYear()+"-"+
+        String(d.getMonth()+1).padStart(2,"0")+"-"+
+        String(d.getDate()).padStart(2,"0");
+}
+
+function differenzaGiorni(data1,data2){
+
+    const a=new Date(data1+"T00:00:00");
+    const b=new Date(data2+"T00:00:00");
+
+    return Math.round(
+        (b-a)/86400000
+    );
+}
+
+function dataAggiungiGiorni(data,giorni){
+
+    const d=new Date(data+"T00:00:00");
+
+    d.setDate(
+        d.getDate()+giorni
+    );
+
+    return dataLocaleISO(d);
+}
+
+
+/* =========================================================
+   ALTITUDINE
+   ========================================================= */
+
+async function recuperaAltitudine(lat,lon){
+
+    const url=
+        `https://api.open-meteo.com/v1/elevation?`+
+        `latitude=${lat}`+
+        `&longitude=${lon}`;
+
+    const risposta=await fetch(url);
+
+    if(!risposta.ok){
+        throw new Error("Errore recupero altitudine");
+    }
+
+    const dati=await risposta.json();
+
+    if(
+        !dati.elevation ||
+        dati.elevation.length===0
+    ){
+        return null;
+    }
+
+    return dati.elevation[0];
+}
+
+
+/* =========================================================
+   MEDIE
+   ========================================================= */
+
+function mediaArray(array){
+
+    const valori=array
+        .map(valore)
+        .filter(v=>v!==null);
+
+    if(!valori.length){
+        return null;
+    }
+
+    return valori.reduce(
+        (a,b)=>a+b,
+        0
+    )/valori.length;
+}
+
+function mediaUltimi(array,n){
+
+    return mediaArray(
+        array.slice(
+            Math.max(0,array.length-n)
+        )
+    );
+}
+
+
+/* =========================================================
+   EVENTI PIOGGIA
+   ========================================================= */
+
+function trovaEventiPioggia(
+    giorni,
+    piogge,
+    temperature
+){
+
+    const eventi=[];
+
+    for(
+        let i=1;
+        i<giorni.length-1;
+        i++
+    ){
+
+        let accumulo=0;
+
+        for(
+            let j=Math.max(0,i-1);
+            j<=Math.min(
+                piogge.length-1,
+                i+1
+            );
+            j++
+        ){
+
+            accumulo +=
+                valore(piogge[j]) || 0;
+        }
+
+        if(
+            accumulo<
+            MODELLO.pioggiaEventoMin
+        ){
+            continue;
+        }
+
+        const p=
+            valore(piogge[i]) || 0;
+
+        const pPrima=
+            valore(piogge[i-1]) || 0;
+
+        const pDopo=
+            valore(piogge[i+1]) || 0;
+
+        if(
+            p<pPrima &&
+            p<pDopo
+        ){
+            continue;
+        }
+
+        const dataEvento=giorni[i];
+
+        const ultimo=
+            eventi[eventi.length-1];
+
+        if(
+            ultimo &&
+            differenzaGiorni(
+                ultimo.data,
+                dataEvento
+            )<4
+        ){
+
+            if(
+                accumulo>
+                ultimo.pioggia
+            ){
+
+                ultimo.data=dataEvento;
+                ultimo.pioggia=accumulo;
+                ultimo.indice=i;
+            }
+
+            continue;
+        }
+
+        let tempPrima=[];
+
+        for(
+            let j=Math.max(0,i-2);
+            j<i;
+            j++
+        ){
+
+            const t=
+                valore(temperature[j]);
+
+            if(t!==null){
+                tempPrima.push(t);
+            }
+        }
+
+        let tempDopo=[];
+
+        for(
+            let j=i;
+            j<=Math.min(
+                temperature.length-1,
+                i+1
+            );
+            j++
+        ){
+
+            const t=
+                valore(temperature[j]);
+
+            if(t!==null){
+                tempDopo.push(t);
+            }
+        }
+
+        const mediaPrima=
+            mediaArray(tempPrima);
+
+        const mediaDopo=
+            mediaArray(tempDopo);
+
+        const shock=
+            mediaPrima!==null &&
+            mediaDopo!==null
+            ? mediaPrima-mediaDopo
+            : 0;
+
+        eventi.push({
+
+            data:dataEvento,
+            pioggia:accumulo,
+            indice:i,
+            temperaturaPrima:mediaPrima,
+            temperaturaDopo:mediaDopo,
+            shock:shock
+
+        });
+    }
+
+    return eventi;
+}
+
+
+/* =========================================================
+   PUNTEGGI
+   ========================================================= */
+
+function scoreAcqua(pioggia){
+
+    if(pioggia>=30) return 25;
+    if(pioggia>=20) return 23;
+    if(pioggia>=15) return 20;
+    if(pioggia>=10) return 13;
+    if(pioggia>=5) return 7;
+
+    return 0;
+}
+
+function scoreShock(shock){
+
+    if(shock>=5) return 15;
+    if(shock>=4) return 14;
+    if(shock>=3) return 12;
+    if(shock>=2) return 7;
+    if(shock>=1) return 3;
+
+    return 0;
+}
+
+function scoreTemperatura(temp){
+
+    if(temp===null) return 0;
+
+    if(temp>=12 && temp<=18) return 15;
+    if(temp>=10 && temp<=21) return 11;
+    if(temp>=8 && temp<=23) return 6;
+
+    return 0;
+}
+
+function scoreUmidita(umidita){
+
+    if(umidita===null) return 0;
+
+    if(umidita>=85) return 10;
+    if(umidita>=78) return 8;
+    if(umidita>=70) return 5;
+    if(umidita>=60) return 2;
+
+    return 0;
+}
+
+function scoreAltitudine(altitudine){
+
+    if(altitudine===null) return 0;
+
+    if(
+        altitudine>=500 &&
+        altitudine<=1200
+    ){
+        return 5;
+    }
+
+    if(
+        altitudine>=300 &&
+        altitudine<=1400
+    ){
+        return 3;
+    }
+
+    return 0;
+}
+
+function scoreTiming(giorni,tipo){
+
+    const min=
+        tipo==="estate"
+        ? MODELLO.estateMin
+        : MODELLO.autunnoMin;
+
+    const max=
+        tipo==="estate"
+        ? MODELLO.estateMax
+        : MODELLO.autunnoMax;
+
+    if(
+        giorni>=min &&
+        giorni<=max
+    ){
+        return 25;
+    }
+
+    if(
+        giorni===min-1 ||
+        giorni===max+1
+    ){
+        return 17;
+    }
+
+    if(
+        giorni===min-2 ||
+        giorni===max+2
+    ){
+        return 9;
+    }
+
+    return 0;
+}
+
+
+/* =========================================================
+   EVENTO PIÙ RILEVANTE
+   ========================================================= */
+
+function trovaEventoRilevante(
+    eventi,
+    oggi
+){
+
+    let migliore=null;
+    let migliorScore=-1;
+
+    for(
+        const evento of eventi
+    ){
+
+        const giorni=
+            differenzaGiorni(
+                evento.data,
+                oggi
+            );
+
+        if(giorni<0){
+            continue;
+        }
+
+        const score=
+            scoreAcqua(evento.pioggia)+
+            scoreShock(evento.shock);
+
+        if(score>migliorScore){
+
+            migliorScore=score;
+
+            migliore={
+                ...evento,
+                giorniTrascorsi:giorni
+            };
+        }
+    }
+
+    return migliore;
+}
+
+
+/* =========================================================
+   CALCOLO COMPLETO DI UNA LOCALITÀ
+   ========================================================= */
+
+async function calcolaLocalita(
+    localita,
+    mostraDettaglio=false
+){
+
+    const oggi=dataLocaleISO(
+        new Date()
+    );
+
+    const inizioDate=new Date();
+    inizioDate.setDate(
+        inizioDate.getDate()-
+        MODELLO.giorniStorico
+    );
+
+    const start=
+        dataLocaleISO(
+            inizioDate
+        );
+
+    const [
+        altitudine,
+        rispostaStorico,
+        rispostaForecast
+    ]=await Promise.all([
+
+        recuperaAltitudine(
+            localita.lat,
+            localita.lon
+        ),
+
+        fetch(
+            `https://archive-api.open-meteo.com/v1/archive?`+
+            `latitude=${localita.lat}`+
+            `&longitude=${localita.lon}`+
+            `&start_date=${start}`+
+            `&end_date=${oggi}`+
+            `&daily=`+
+            `temperature_2m_mean,`+
+            `precipitation_sum,`+
+            `relative_humidity_2m_mean`+
+            `&timezone=auto`
+        ),
+
+        fetch(
+            `https://api.open-meteo.com/v1/forecast?`+
+            `latitude=${localita.lat}`+
+            `&longitude=${localita.lon}`+
+            `&forecast_days=14`+
+            `&daily=`+
+            `temperature_2m_max,`+
+            `temperature_2m_min,`+
+            `precipitation_sum,`+
+            `precipitation_probability_max,`+
+            `relative_humidity_2m_mean`+
+            `&timezone=auto`
+        )
+
+    ]);
+
+    if(!rispostaStorico.ok){
+        throw new Error(
+            "Errore dati storici"
+        );
+    }
+
+    if(!rispostaForecast.ok){
+        throw new Error(
+            "Errore dati previsionali"
+        );
+    }
+
+    const storico=
+        await rispostaStorico.json();
+
+    const forecast=
+        await rispostaForecast.json();
+
+    const giorniStorico=
+        storico.daily.time;
+
+    const pioggeStorico=
+        storico.daily.precipitation_sum;
+
+    const temperatureStorico=
+        storico.daily.temperature_2m_mean;
+
+    const umiditaStorico=
+        storico.daily.relative_humidity_2m_mean;
+
+
+    /* =========================
+       TOTALI
+       ========================= */
+
+    let pioggia3=0;
+    let pioggia7=0;
+    let pioggia14=0;
+    let pioggia20=0;
+    let pioggia45=0;
+
+    for(
+        let i=0;
+        i<pioggeStorico.length;
+        i++
+    ){
+
+        const p=
+            valore(pioggeStorico[i]) || 0;
+
+        pioggia45+=p;
+
+        if(
+            i>=pioggeStorico.length-3
+        ){
+            pioggia3+=p;
+        }
+
+        if(
+            i>=pioggeStorico.length-7
+        ){
+            pioggia7+=p;
+        }
+
+        if(
+            i>=pioggeStorico.length-14
+        ){
+            pioggia14+=p;
+        }
+
+        if(
+            i>=pioggeStorico.length-20
+        ){
+            pioggia20+=p;
+        }
+    }
+
+
+    const tempMedia7=
+        mediaUltimi(
+            temperatureStorico,
+            7
+        );
+
+    const umiditaMedia7=
+        mediaUltimi(
+            umiditaStorico,
+            7
+        );
+
+
+    /* =========================
+       EVENTI
+       ========================= */
+
+    const eventi=
+        trovaEventiPioggia(
+            giorniStorico,
+            pioggeStorico,
+            temperatureStorico
+        );
+
+    const evento=
+        trovaEventoRilevante(
+            eventi,
+            oggi
+        );
+
+
+    /* =========================
+       INDICE ATTUALE
+       ========================= */
+
+    const acqua=
+        evento
+        ? scoreAcqua(evento.pioggia)
+        : 0;
+
+    const shock=
+        evento
+        ? scoreShock(evento.shock)
+        : 0;
+
+    const timingEstate=
+        evento
+        ? scoreTiming(
+            evento.giorniTrascorsi,
+            "estate"
+        )
+        : 0;
+
+    const timingAutunno=
+        evento
+        ? scoreTiming(
+            evento.giorniTrascorsi,
+            "autunno"
+        )
+        : 0;
+
+    const temperatura=
+        scoreTemperatura(
+            tempMedia7
+        );
+
+    const umidita=
+        scoreUmidita(
+            umiditaMedia7
+        );
+
+    const alt=
+        scoreAltitudine(
+            altitudine
+        );
+
+    const indice=
+        clamp(
+            Math.round(
+                acqua+
+                shock+
+                Math.max(
+                    timingEstate,
+                    timingAutunno
+                )+
+                temperatura+
+                umidita+
+                alt
+            ),
+            0,
+            100
+        );
+
+
+    /* =========================
+       OVULO
+       ========================= */
+
+    let indiceOvulo=0;
+
+    if(tempMedia7!==null){
+
+        if(
+            tempMedia7>=14 &&
+            tempMedia7<=21
+        ){
+            indiceOvulo+=40;
+        }
+        else if(
+            tempMedia7>=11 &&
+            tempMedia7<=24
+        ){
+            indiceOvulo+=25;
+        }
+    }
+
+    if(umiditaMedia7!==null){
+
+        if(umiditaMedia7>=80){
+            indiceOvulo+=30;
+        }
+        else if(umiditaMedia7>=70){
+            indiceOvulo+=20;
+        }
+    }
+
+    if(pioggia7>=15){
+        indiceOvulo+=20;
+    }
+    else if(pioggia7>=7){
+        indiceOvulo+=10;
+    }
+
+    indiceOvulo=
+        clamp(
+            Math.round(indiceOvulo),
+            0,
+            100
+        );
+
+
+    /* =========================
+       FORECAST GIORNALIERO
+       ========================= */
+
+    const giorniForecast=
+        forecast.daily.time;
+
+    const pioggeForecast=
+        forecast.daily.precipitation_sum;
+
+    const probPioggia=
+        forecast.daily
+        .precipitation_probability_max;
+
+    const tempMax=
+        forecast.daily.temperature_2m_max;
+
+    const tempMin=
+        forecast.daily.temperature_2m_min;
+
+    const umiditaForecast=
+        forecast.daily
+        .relative_humidity_2m_mean;
+
+    const punteggiGiornalieri=[];
+
+    for(
+        let i=0;
+        i<giorniForecast.length;
+        i++
+    ){
+
+        const p=
+            valore(pioggeForecast[i]) || 0;
+
+        const um=
+            valore(umiditaForecast[i]);
+
+        const max=
+            valore(tempMax[i]);
+
+        const min=
+            valore(tempMin[i]);
+
+        const tm=
+            max!==null &&
+            min!==null
+            ? (max+min)/2
+            : null;
+
+        let score=0;
+
+        score+=
+            scoreTemperatura(tm);
+
+        score+=
+            scoreUmidita(um);
+
+        score+=
+            scoreAltitudine(altitudine);
+
+        if(
+            p>=5 &&
+            p<=30
+        ){
+            score+=10;
+        }
+        else if(p>=2){
+            score+=6;
+        }
+
+        const prob=
+            valore(probPioggia[i]) || 0;
+
+        if(prob>=70){
+            score+=5;
+        }
+        else if(prob>=40){
+            score+=3;
+        }
+
+        if(evento){
+
+            const giorniDalEvento=
+                differenzaGiorni(
+                    evento.data,
+                    giorniForecast[i]
+                );
+
+            score+=Math.max(
+                scoreTiming(
+                    giorniDalEvento,
+                    "estate"
+                ),
+                scoreTiming(
+                    giorniDalEvento,
+                    "autunno"
+                )
+            );
+
+            if(
+                giorniDalEvento>=8 &&
+                giorniDalEvento<=21
+            ){
+                score+=5;
+            }
+        }
+
+        punteggiGiornalieri.push(
+            clamp(
+                Math.round(score),
+                0,
+                100
+            )
+        );
+    }
+
+
+    /* =========================
+       DOMANI
+       ========================= */
+
+    const domani=
+        dataAggiungiGiorni(
+            oggi,
+            1
+        );
+
+    const posizioneDomani=
+        giorniForecast.indexOf(
+            domani
+        );
+
+    const indiceDomani=
+        posizioneDomani>=0
+        ? punteggiGiornalieri[
+            posizioneDomani
+        ]
+        : 0;
+
+
+    /* =========================
+       MIGLIOR GIORNO
+       ========================= */
+
+    const migliorIndice=
+        Math.max(
+            ...punteggiGiornalieri
+        );
+
+    const migliorPosizione=
+        punteggiGiornalieri.indexOf(
+            migliorIndice
+        );
+
+    const migliorGiorno=
+        giorniForecast[
+            migliorPosizione
+        ];
+
+
+    return {
+
+        localita,
+
+        oggi,
+
+        altitudine,
+
+        giorniStorico,
+        pioggeStorico,
+        temperatureStorico,
+        umiditaStorico,
+
+        pioggia3,
+        pioggia7,
+        pioggia14,
+        pioggia20,
+        pioggia45,
+
+        tempMedia7,
+        umiditaMedia7,
+
+        eventi,
+        evento,
+
+        acqua,
+        shock,
+        timingEstate,
+        timingAutunno,
+        temperatura,
+        umidita,
+        alt,
+
+        indice,
+        indiceOvulo,
+
+        giorniForecast,
+        pioggeForecast,
+        probPioggia,
+        tempMax,
+        tempMin,
+        umiditaForecast,
+
+        punteggiGiornalieri,
+
+        domani,
+        indiceDomani,
+
+        migliorIndice,
+        migliorGiorno,
+        migliorPosizione
+
+    };
+}
+
+
+/* =========================================================
+   MAPPA
+   ========================================================= */
+
 function inizializzaMappa(){
- if(mappa)return;
- mappa=L.map("map").setView([43.56,11.62],10);
- L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(mappa);
- markerLayer=L.layerGroup().addTo(mappa);
 
- /* Carta forestale regionale: visualizzazione, non usata da sola come punteggio. */
- const forestLayer=L.tileLayer.wms(WMS.url,{
-   layers:"rt_ucs.idvegfor.rt",
-   format:"image/png",transparent:true,opacity:.35,
-   attribution:"Regione Toscana - GEOscopio"
- });
- forestLayer.addTo(mappa);
+    if(mappa){
+        return;
+    }
 
- const ctr=L.tileLayer.wms("https://www502.regione.toscana.it/ows_ctr/com.rt.wms.RTmap/ows?map=owsctr&",{
-   layers:"CTR10K",
-   format:"image/png",transparent:true,opacity:.25,
-   attribution:"Regione Toscana - CTR"
- });
- /* CTR può non essere disponibile con lo stesso nome layer in ogni configurazione: non la aggiungiamo automaticamente. */
+    mappa=L.map("map").setView(
+        [43.56,11.62],
+        10
+    );
 
- const legend=L.control({position:"bottomright"});
- legend.onAdd=function(){
-  const d=L.DomUtil.create("div","map-legend");
-  d.innerHTML="<b>🍄 Radar V2.4</b><br><span class='dot green'></span> ≥75<br><span class='dot yellow'></span> 50–74<br><span class='dot red'></span> &lt;50<br><hr>🌳 Carta vegetazione forestale regionale";
-  return d;
- };
- legend.addTo(mappa);
-}
-function creaMarker(r){
- const n=r.indiceDomani,m=L.circleMarker([r.localita.lat,r.localita.lon],{radius:12,color:"#fff",weight:3,fillColor:color(n),fillOpacity:.95});
- const h=r.habitatMigliore?`${HABITAT[r.habitatMigliore[0]].icon} ${HABITAT[r.habitatMigliore[0]].nome}`:"N/D";
- m.bindPopup(`<div style="min-width:230px"><h3 style="margin:0 0 8px">🍄 ${escapeHtml(r.localita.nome)}</h3><div class="popupScore">${n}/100</div><b>${testo(n)}</b><hr>🎯 Habitat migliore: <b>${h}</b><br>🌧️ Pioggia 7 gg: ${r.pioggia7.toFixed(1)} mm<br>⛰️ ${Math.round(r.terreno.elevazione)} m<br>📐 Pendenza: ${r.terreno.pendenza.toFixed(1)}°<br>🧭 Esposizione: ${r.terreno.esposizioneNome}<hr><b>Domani ${n}/100</b></div>`);
- m.addTo(markerLayer);
-}
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom:19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    ).addTo(mappa);
 
-/* ---------- ranking ---------- */
-function costruisciClassifica(rs){
- const el=document.getElementById("classifica");
- let html="<h2>🏆 Dove conviene andare domani?</h2>";
- [...rs].sort((a,b)=>b.indiceDomani-a.indiceDomani).forEach((r,i)=>{
-   const h=r.habitatMigliore;
-   const hs=h?`${HABITAT[h[0]].icon} ${HABITAT[h[0]].nome} — ${h[1]}/100`:"N/D";
-   html+=`<div class="rank ${border(r.indiceDomani)}">
-   <div class="rankHeader"><div><b>#${i+1} — ${escapeHtml(r.localita.nome)}</b><div class="mini">${testo(r.indiceDomani)} • 🎯 ${hs}</div></div><div class="rankScore">${r.indiceDomani}</div></div>
-   <div class="progress"><div class="bar" style="width:${r.indiceDomani}%;background:${color(r.indiceDomani)}"></div></div>
-   <div class="kpi">🌧️ ${r.pioggia7.toFixed(1)} mm • 🌡️ ${r.tempMedia7?.toFixed(1)??"N/D"}°C • 💧 ${r.umiditaMedia7?.toFixed(0)??"N/D"}% • ⛰️ ${Math.round(r.terreno.elevazione)} m • 🧭 ${r.terreno.esposizioneNome}</div>
-   ${timeline(r)}</div>`;
- });
- el.innerHTML=html;
-}
-function timeline(r){
- if(!r.evento)return "<div class='mini'>⏱️ Nessun evento rilevante.</div>";
- let s="",n=r.evento.giorniTrascorsi;
- for(let d=0;d<=18;d++){const c=d>=3&&d<=8?"best":d===9||d===10?"near":"";s+=`<div class="seg ${c} ${d===n?"now":""}" title="giorno ${d}"></div>`}
- return `<div class="timeline">${s}</div><div class="mini">🌧️ Evento ${fmtFull(r.evento.data)} • ${r.evento.pioggia.toFixed(1)} mm • giorno ${n}</div>`;
+    markerLayer=
+        L.layerGroup().addTo(mappa);
+
+    const legenda=
+        L.control({
+            position:"bottomright"
+        });
+
+    legenda.onAdd=function(){
+
+        const div=
+            L.DomUtil.create(
+                "div",
+                "map-legend"
+            );
+
+        div.innerHTML=`
+            <b>🍄 Radar</b><br>
+            <span class="legend-dot dot-green"></span>
+            ≥75 interessante<br>
+            <span class="legend-dot dot-yellow"></span>
+            50–74 da monitorare<br>
+            <span class="legend-dot dot-red"></span>
+            &lt;50 debole
+        `;
+
+        return div;
+    };
+
+    legenda.addTo(mappa);
 }
 
-/* ---------- detail ---------- */
-function dettaglio(r){
- const h=r.habitatOrdinati;
- let html=`<div class="status ${classe(r.indice)}"><h2>${testo(r.indice)}</h2><div><b>📍 ${escapeHtml(r.localita.nome)}</b></div><div class="index">${r.indice}/100</div><div>🎯 Oggi conviene soprattutto: <b>${HABITAT[h[0][0]].icon} ${HABITAT[h[0][0]].nome}</b></div></div>`;
- html+=`<h3>⛰️ Terreno</h3><div class="info-grid">
- <div class="card"><div class="label">Quota</div><div class="value">${Math.round(r.terreno.elevazione)} m</div></div>
- <div class="card"><div class="label">Pendenza</div><div class="value">${r.terreno.pendenza.toFixed(1)}°</div></div>
- <div class="card"><div class="label">Esposizione</div><div class="value">${r.terreno.esposizioneNome}</div></div>
- <div class="card"><div class="label">Pioggia 7 gg</div><div class="value">${r.pioggia7.toFixed(1)} mm</div></div>
- <div class="card"><div class="label">Temp. media 7 gg</div><div class="value">${r.tempMedia7?.toFixed(1)??"N/D"} °C</div></div>
- <div class="card"><div class="label">Umidità media 7 gg</div><div class="value">${r.umiditaMedia7?.toFixed(0)??"N/D"} %</div></div>
- </div>`;
- html+=`<h3>🌳 Habitat — confronto</h3><div class="habitatGrid">`;
- h.forEach(([k,s])=>{
-   const hf=r.habitatForecasts[k],mx=Math.max(...hf),idx=hf.indexOf(mx),d=r.giorniForecast[idx];
-   html+=`<div class="habitatCard"><div class="habitatTop"><b>${HABITAT[k].icon} ${HABITAT[k].nome}</b><span class="habitatScore ${classe(s)}">${s}</span></div>
-   <div class="progress"><div class="bar" style="width:${s}%;background:${color(s)}"></div></div>
-   <div class="mini">⭐ Picco 14 gg: <b>${mx}/100</b><br>📅 ${fmtFull(d)}<br>⏱️ Finestra ${HABITAT[k].finestra[0]}–${HABITAT[k].finestra[1]} gg<br>🧠 Correzione osservazioni: ${habitatCalibration(k)>=0?"+":""}${habitatCalibration(k).toFixed(1)}</div></div>`;
- });
- html+="</div>";
- if(r.evento)html+=`<div class="explain"><b>🌧️ Evento rilevante:</b> ${fmtFull(r.evento.data)} — ${r.evento.pioggia.toFixed(1)} mm — shock ${r.evento.shock.toFixed(1)}°C — ${r.evento.giorniTrascorsi} giorni trascorsi.</div>`;
- html+=`<h3>🔮 Finestra dei prossimi 14 giorni</h3><div class="forecast">`;
- r.giorniForecast.forEach((d,i)=>{
-  const best=i===r.migliorPosizione,p=r.pioggeForecast[i]||0,u=r.umiditaForecast[i]||0,min=r.tempMin[i],max=r.tempMax[i];
-  html+=`<div class="day ${best?"best":""}"><b>${dayName(d)}<br>${fmt(d)}</b><hr>🌧️ ${p.toFixed(1)} mm<br>💧 ${u.toFixed(0)}%<br>🌡️ ${min?.toFixed(1)??"N/D"}/${max?.toFixed(1)??"N/D"}°C<hr><b>${r.dailyOverall[i]}/100</b>${d===r.domani?"<br>➡️ DOMANI":""}${best?"<br>⭐ MIGLIORE":""}</div>`;
- });
- html+="</div>";
- html+=`<div class="explain"><b>🧮 Come viene calcolato:</b><br>
- 🌧️ meteo/evento → acqua + shock + temperatura + umidità<br>
- ⛰️ terreno → quota + pendenza + esposizione<br>
- 🌳 habitat → finestra temporale specifica + quota + microclima<br>
- 🧠 calibrazione → correzione prudente derivata dalle tue osservazioni salvate nel browser.<br><br>
- <b>Nota:</b> le finestre habitat sono ipotesi operative del modello, non tempi biologici certi.
- </div>`;
- document.getElementById("risultato").innerHTML=html;
+
+/* =========================================================
+   MARKER RADAR
+   ========================================================= */
+
+function creaMarkerRadar(risultato){
+
+    const indice=
+        risultato.indiceDomani;
+
+    const colore=
+        coloreRadar(indice);
+
+    const nome=
+        risultato.localita.nome;
+
+    const lat=
+        risultato.localita.lat;
+
+    const lon=
+        risultato.localita.lon;
+
+    const marker=
+        L.circleMarker(
+            [lat,lon],
+            {
+                radius:12,
+                color:"#ffffff",
+                weight:3,
+                fillColor:colore,
+                fillOpacity:.95
+            }
+        );
+
+    marker.bindPopup(`
+
+        <div style="min-width:210px">
+
+            <h3 style="margin:0 0 8px">
+                🍄 ${nome}
+            </h3>
+
+            <div class="popup-score">
+                ${indice}/100
+            </div>
+
+            <b>
+                ${testoRadar(indice)}
+            </b>
+
+            <hr>
+
+            🌧️ Pioggia 7 gg:
+            ${risultato.pioggia7.toFixed(1)} mm
+            <br>
+
+            🌡️ Temperatura:
+            ${
+                risultato.tempMedia7!==null
+                ? risultato.tempMedia7.toFixed(1)
+                : "N/D"
+            } °C
+
+            <br>
+
+            💧 Umidità:
+            ${
+                risultato.umiditaMedia7!==null
+                ? risultato.umiditaMedia7.toFixed(0)
+                : "N/D"
+            } %
+
+            <br>
+
+            ⛰️ Altitudine:
+            ${
+                risultato.altitudine!==null
+                ? Math.round(
+                    risultato.altitudine
+                  )+" m"
+                : "N/D"
+            }
+
+            <hr>
+
+            <b>
+                📅 Domani: ${indice}/100
+            </b>
+
+        </div>
+
+    `);
+
+    marker.addTo(markerLayer);
 }
 
-/* ---------- radar all ---------- */
+
+/* =========================================================
+   CLASSIFICA
+   ========================================================= */
+
+function costruisciTimeline(r){
+
+    if(!r.evento){
+        return `
+        <div class="timeline-mini">
+            <b>⏱️ Countdown</b>
+            <div class="timeline-note">
+                Nessun evento di pioggia rilevante individuato: countdown non attivo.
+            </div>
+        </div>`;
+    }
+
+    const trascorsi=Math.max(0,Number(r.evento.giorniTrascorsi)||0);
+    const totale=18;
+    let segmenti="";
+
+    for(let giorno=0;giorno<=totale;giorno++){
+        let classe="red";
+
+        if(
+            giorno>=MODELLO.estateMin &&
+            giorno<=MODELLO.estateMax
+        ){
+            classe="green";
+        }else if(
+            giorno>=MODELLO.autunnoMin &&
+            giorno<=MODELLO.autunnoMax
+        ){
+            classe="yellow";
+        }
+
+        const oggi=trascorsi===giorno ? " now" : "";
+
+        segmenti+=`
+            <div
+                class="timeline-segment ${classe}${oggi}"
+                title="Giorno ${giorno}">
+            </div>`;
+    }
+
+    let stato="";
+
+    if(trascorsi<MODELLO.estateMin){
+        stato=`⏳ Mancano ${MODELLO.estateMin-trascorsi} giorni all'inizio della finestra estiva (12–14).`;
+    }else if(trascorsi<=MODELLO.estateMax){
+        stato=`🟢 FINESTRA ESTIVA ATTIVA — giorno ${trascorsi}.`;
+    }else if(trascorsi<MODELLO.autunnoMin){
+        stato=`⏳ Finestra estiva terminata; mancano ${MODELLO.autunnoMin-trascorsi} giorni alla finestra autunnale (15–18).`;
+    }else if(trascorsi<=MODELLO.autunnoMax){
+        stato=`🟡 FINESTRA AUTUNNALE ATTIVA — giorno ${trascorsi}.`;
+    }else{
+        stato=`🔴 Finestra 12–18 giorni trascorsa — evento da rivalutare.`;
+    }
+
+    return `
+    <div class="timeline-mini">
+        <b>📅 Timeline buttata — giorno 0 → 18</b>
+
+        <div class="rank-timeline">
+            <div class="timeline-track">
+                <div class="timeline-marker">
+                    <div class="icon">🌧️</div>
+                    <div class="timeline-label">0</div>
+                </div>
+
+                ${segmenti}
+
+                <div class="timeline-marker">
+                    <div class="icon">⭐</div>
+                    <div class="timeline-label">14</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-now">
+            ${stato}
+        </div>
+
+        <div class="event-mini">
+            🌧️ Evento: <b>${formatDataCompleta(r.evento.data)}</b>
+            • ${Number(r.evento.pioggia).toFixed(1)} mm
+            • ❄️ shock ${Number(r.evento.shock).toFixed(1)} °C
+            • ⏱️ ${trascorsi} giorni trascorsi
+        </div>
+
+        <div class="timeline-note">
+            🔴 fuori finestra &nbsp; 🟢 12–14 giorni &nbsp; 🟡 15–18 giorni
+            • il bordo scuro indica il giorno attuale del countdown.
+        </div>
+    </div>`;
+}
+
+
+function costruisciClassifica(
+    risultati
+){
+
+    const contenitore=
+        document.getElementById(
+            "classifica"
+        );
+
+    const ordinati=
+        [...risultati].sort(
+            (a,b)=>
+                b.indiceDomani-
+                a.indiceDomani
+        );
+
+    let html="";
+
+    ordinati.forEach(
+        (r,i)=>{
+
+            const classe=
+                classeRadar(
+                    r.indiceDomani
+                );
+
+            html+=`
+
+            <div class="rank-card ${classe}">
+
+                <div class="rank-header">
+
+                    <div>
+
+                        <div class="rank-position">
+                            #${i+1} — ${r.localita.nome}
+                        </div>
+
+                        <div class="rank-meta">
+                            ${testoRadar(
+                                r.indiceDomani
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div class="rank-score">
+                        ${r.indiceDomani}/100
+                    </div>
+
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-bar"
+                        style="width:${r.indiceDomani}%">
+                    </div>
+                </div>
+
+                <div class="rank-meta">
+
+                    🌧️ ${r.pioggia7.toFixed(1)} mm
+                    •
+                    🌡️ ${
+                        r.tempMedia7!==null
+                        ? r.tempMedia7.toFixed(1)
+                        : "N/D"
+                    } °C
+                    •
+                    💧 ${
+                        r.umiditaMedia7!==null
+                        ? r.umiditaMedia7.toFixed(0)
+                        : "N/D"
+                    } %
+
+                    <br>
+
+                    ⛰️ ${
+                        r.altitudine!==null
+                        ? Math.round(r.altitudine)+" m"
+                        : "N/D"
+                    }
+
+                    •
+                    🍄 indice attuale:
+                    ${r.indice}/100
+
+                </div>
+
+                ${costruisciTimeline(r)}
+
+            </div>
+
+            `;
+        }
+    );
+
+    contenitore.innerHTML=html;
+}
+
+
+/* =========================================================
+   ANALIZZA TUTTE LE LOCALITÀ
+   ========================================================= */
+
 async function analizzaTutteLeLocalita(){
- const btn=document.getElementById("radarBtn");btn.disabled=true;
- document.getElementById("radarStato").textContent="⏳ Analisi in corso...";
- inizializzaMappa();markerLayer.clearLayers();risultatiRadar=[];
- try{
-  risultatiRadar=await Promise.all(LOCALITA.map(calcolaLocalita));
-  risultatiRadar.forEach(creaMarker);
-  costruisciClassifica(risultatiRadar);
-  risultatiRadar.sort((a,b)=>b.indiceDomani-a.indiceDomani);
-  const best=risultatiRadar[0];
-  document.getElementById("radarStato").innerHTML=`✅ ${risultatiRadar.length} località analizzate. <b>Domani: ${escapeHtml(best.localita.nome)} — ${best.indiceDomani}/100 — ${HABITAT[best.habitatMigliore[0]].icon} ${HABITAT[best.habitatMigliore[0]].nome}</b>`;
-  mappa.fitBounds(L.latLngBounds(LOCALITA.map(x=>[x.lat,x.lon])),{padding:[25,25]});
- }catch(e){
-  console.error(e);
-  document.getElementById("radarStato").innerHTML="❌ Errore: "+escapeHtml(e.message);
- }finally{btn.disabled=false}
+
+    const btn=
+        document.getElementById(
+            "radarBtn"
+        );
+
+    btn.disabled=true;
+
+    document.getElementById(
+        "radarStato"
+    ).innerHTML=
+        "⏳ Sto analizzando tutte le località. Attendi qualche secondo...";
+
+    inizializzaMappa();
+
+    markerLayer.clearLayers();
+
+    risultatiRadar=[];
+
+    document.getElementById(
+        "classifica"
+    ).innerHTML=
+        "<p>⏳ Recupero dati...</p>";
+
+    try{
+
+        /*
+         * Le richieste vengono eseguite
+         * in parallelo per rendere il radar
+         * più veloce.
+         */
+
+        risultatiRadar=
+            await Promise.all(
+                LOCALITA.map(
+                    localita=>
+                        calcolaLocalita(
+                            localita
+                        )
+                )
+            );
+
+        risultatiRadar.sort(
+            (a,b)=>
+                b.indiceDomani-
+                a.indiceDomani
+        );
+
+        risultatiRadar.forEach(
+            creaMarkerRadar
+        );
+
+        costruisciClassifica(
+            risultatiRadar
+        );
+
+        const migliore=
+            risultatiRadar[0];
+
+        document.getElementById(
+            "radarStato"
+        ).innerHTML=`
+
+            <b>
+                ✅ Radar aggiornato
+            </b>
+
+            • ${risultatiRadar.length}
+            località analizzate
+
+            <br>
+
+            ⭐ Domani il modello indica
+            <b>${migliore.localita.nome}</b>
+            come prima classificata con
+            <b>${migliore.indiceDomani}/100</b>.
+
+        `;
+
+        // Adatta la mappa a tutte le località.
+        const bounds=
+            L.latLngBounds(
+                LOCALITA.map(
+                    l=>[l.lat,l.lon]
+                )
+            );
+
+        mappa.fitBounds(
+            bounds,
+            {padding:[25,25]}
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById(
+            "radarStato"
+        ).innerHTML=
+            `❌ Errore: ${error.message}`;
+
+        document.getElementById(
+            "classifica"
+        ).innerHTML=
+            `
+            <div class="status bad">
+                Non è stato possibile completare
+                il radar generale.
+                <br><br>
+                ${error.message}
+            </div>
+            `;
+
+    }finally{
+
+        btn.disabled=false;
+
+    }
 }
 
-/* ---------- single ---------- */
+
+/* =========================================================
+   ANALISI SINGOLA LOCALITÀ
+   ========================================================= */
+
 async function analizzaLocalitaSelezionata(){
- const btn=document.getElementById("analizzaBtn");btn.disabled=true;
- const loc=LOCALITA[Number(document.getElementById("localita").value)];
- document.getElementById("risultato").innerHTML='<div class="status">⏳ Recupero meteo, terreno e cartografia forestale...</div>';
- try{
-  const r=await calcolaLocalita(loc);dettaglio(r);costruisciGrafico(r);
-  inizializzaMappa();mappa.setView([loc.lat,loc.lon],12);
- }catch(e){
-  console.error(e);document.getElementById("risultato").innerHTML=`<div class="status bad">❌ ${escapeHtml(e.message)}</div>`;
- }finally{btn.disabled=false}
+
+    const btn=
+        document.getElementById(
+            "analizzaBtn"
+        );
+
+    btn.disabled=true;
+
+    const select=
+        document.getElementById(
+            "localita"
+        );
+
+    const coordinate=
+        select.value.split(",");
+
+    const localita={
+
+        nome:
+            select.options[
+                select.selectedIndex
+            ].text,
+
+        lat:
+            parseFloat(
+                coordinate[0]
+            ),
+
+        lon:
+            parseFloat(
+                coordinate[1]
+            )
+
+    };
+
+    document.getElementById(
+        "risultato"
+    ).innerHTML=
+        `
+        <div class="loading">
+            ⏳ Recupero dati meteo,
+            altitudine e storico...
+        </div>
+        `;
+
+    try{
+
+        const r=
+            await calcolaLocalita(
+                localita,
+                true
+            );
+
+        costruisciDettaglio(
+            r
+        );
+
+        costruisciGrafico(
+            r
+        );
+
+        // Se la mappa è già stata creata,
+        // evidenzia la località selezionata.
+        inizializzaMappa();
+
+        mappa.setView(
+            [localita.lat,localita.lon],
+            12
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById(
+            "risultato"
+        ).innerHTML=
+            `
+            <div class="status bad">
+
+                <h3>❌ Errore</h3>
+
+                <p>
+                    Non è stato possibile
+                    recuperare i dati meteorologici.
+                </p>
+
+                <p>
+                    ${error.message}
+                </p>
+
+            </div>
+            `;
+
+    }finally{
+
+        btn.disabled=false;
+
+    }
 }
 
-/* ---------- chart ---------- */
+
+/* =========================================================
+   DETTAGLIO LOCALITÀ
+   ========================================================= */
+
+function costruisciDettaglio(r){
+
+    const evento=r.evento;
+
+    const indice=r.indice;
+
+    const migliorIndice=r.migliorIndice;
+
+    let html=`
+
+        <div class="status ${classeIndice(indice)}">
+
+            <h2>
+                ${semaforoIndice(indice)}
+            </h2>
+
+            <div>
+                <b>📍 ${r.localita.nome}</b>
+            </div>
+
+            <div class="countdown">
+
+                ${
+                    evento
+                    ? `⏱️ ${evento.giorniTrascorsi}
+                       giorni dall'evento`
+                    : `⏱️ Nessun evento significativo`
+                }
+
+            </div>
+
+            <div>
+                Indice buttata attuale:
+                <b>${indice}/100</b>
+            </div>
+
+        </div>
+
+
+        <h3>📍 Località</h3>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <div class="label">
+                    Latitudine
+                </div>
+                <div class="value">
+                    ${r.localita.lat.toFixed(6)}
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Longitudine
+                </div>
+                <div class="value">
+                    ${r.localita.lon.toFixed(6)}
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Altitudine
+                </div>
+                <div class="value">
+                    ${
+                        r.altitudine!==null
+                        ? Math.round(
+                            r.altitudine
+                          )+" m"
+                        : "N/D"
+                    }
+                </div>
+            </div>
+
+        </div>
+
+
+        <h3>🌧️ Situazione recente</h3>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <div class="label">
+                    Pioggia 3 giorni
+                </div>
+                <div class="value">
+                    ${r.pioggia3.toFixed(1)} mm
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Pioggia 7 giorni
+                </div>
+                <div class="value">
+                    ${r.pioggia7.toFixed(1)} mm
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Pioggia 14 giorni
+                </div>
+                <div class="value">
+                    ${r.pioggia14.toFixed(1)} mm
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Pioggia 20 giorni
+                </div>
+                <div class="value">
+                    ${r.pioggia20.toFixed(1)} mm
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Pioggia 45 giorni
+                </div>
+                <div class="value">
+                    ${r.pioggia45.toFixed(1)} mm
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Temperatura media 7 gg
+                </div>
+                <div class="value">
+                    ${
+                        r.tempMedia7!==null
+                        ? r.tempMedia7.toFixed(1)+" °C"
+                        : "N/D"
+                    }
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">
+                    Umidità media 7 gg
+                </div>
+                <div class="value">
+                    ${
+                        r.umiditaMedia7!==null
+                        ? r.umiditaMedia7.toFixed(0)+" %"
+                        : "N/D"
+                    }
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="index-box">
+
+            🍄 <b>Indice Buttata</b>
+
+            <div class="index-number ${classeIndice(indice)}">
+                ${indice}/100
+            </div>
+
+        </div>
+
+
+        <div class="index-box">
+
+            🥚 <b>Indice Ovulo</b>
+
+            <div class="index-number ${classeIndice(r.indiceOvulo)}">
+                ${r.indiceOvulo}/100
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* =========================
+       EVENTO
+       ========================= */
+
+    if(evento){
+
+        const estateInizio=
+            dataAggiungiGiorni(
+                evento.data,
+                MODELLO.estateMin
+            );
+
+        const estateFine=
+            dataAggiungiGiorni(
+                evento.data,
+                MODELLO.estateMax
+            );
+
+        const autunnoInizio=
+            dataAggiungiGiorni(
+                evento.data,
+                MODELLO.autunnoMin
+            );
+
+        const autunnoFine=
+            dataAggiungiGiorni(
+                evento.data,
+                MODELLO.autunnoMax
+            );
+
+        html+=`
+
+        <hr>
+
+        <h3>
+            🌧️ Evento di pioggia rilevante
+        </h3>
+
+        <div class="event-card active">
+
+            <div class="event-title">
+                🌧️ ${formatDataCompleta(
+                    evento.data
+                )}
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-card">
+                    <div class="label">
+                        Pioggia evento
+                    </div>
+                    <div class="value">
+                        ${evento.pioggia.toFixed(1)} mm
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="label">
+                        Giorni trascorsi
+                    </div>
+                    <div class="value">
+                        ${evento.giorniTrascorsi}
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="label">
+                        Shock termico
+                    </div>
+                    <div class="value">
+                        ${evento.shock.toFixed(1)} °C
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="label">
+                        Acqua
+                    </div>
+                    <div class="value">
+                        ${r.acqua}/25
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="label">
+                        Shock
+                    </div>
+                    <div class="value">
+                        ${r.shock}/15
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        ${costruisciTimeline(r)}
+
+        <div class="finestra">
+
+            <h3>
+                ☀️ Porcino estivo
+            </h3>
+
+            <b>
+                ${formatData(estateInizio)}
+                →
+                ${formatData(estateFine)}
+            </b>
+
+            <br><br>
+
+            Punteggio timing:
+            <b>${r.timingEstate}/25</b>
+
+            <br><br>
+
+            ${
+                evento.giorniTrascorsi<
+                MODELLO.estateMin
+
+                ? `⏳ La finestra deve ancora iniziare.`
+
+                : evento.giorniTrascorsi<=
+                  MODELLO.estateMax
+
+                ? `🟢 Sei nella finestra indicativa.`
+
+                : `🔴 La finestra indicativa è trascorsa.`
+            }
+
+        </div>
+
+
+        <div class="finestra autunno">
+
+            <h3>
+                🍂 Porcino autunnale
+            </h3>
+
+            <b>
+                ${formatData(autunnoInizio)}
+                →
+                ${formatData(autunnoFine)}
+            </b>
+
+            <br><br>
+
+            Punteggio timing:
+            <b>${r.timingAutunno}/25</b>
+
+            <br><br>
+
+            ${
+                evento.giorniTrascorsi<
+                MODELLO.autunnoMin
+
+                ? `⏳ La finestra deve ancora iniziare.`
+
+                : evento.giorniTrascorsi<=
+                  MODELLO.autunnoMax
+
+                ? `🟢 Sei nella finestra indicativa.`
+
+                : `🔴 La finestra indicativa è trascorsa.`
+            }
+
+        </div>
+
+        `;
+
+    }else{
+
+        html+=`
+
+        <hr>
+
+        <div class="status medium">
+
+            <h3>
+                🌧️ Nessun evento significativo
+            </h3>
+
+            <p>
+                Non è stato individuato nello storico
+                recente un episodio di pioggia di almeno
+                ${MODELLO.pioggiaEventoMin} mm circa
+                entro una piccola finestra temporale.
+            </p>
+
+            <p>
+                Il countdown biologico non viene quindi
+                considerato attivo.
+            </p>
+
+        </div>
+
+        `;
+    }
+
+
+    /* =========================
+       DOMANI
+       ========================= */
+
+    const indiceDomani=
+        r.indiceDomani;
+
+    html+=`
+
+        <hr>
+
+        <div class="status ${classeIndice(indiceDomani)}">
+
+            <h3>
+                🔮 DOVE CONVIENE ANDARE DOMANI?
+            </h3>
+
+            <div class="countdown">
+                ${r.localita.nome}
+                — ${indiceDomani}/100
+            </div>
+
+            <b>
+                ${testoRadar(indiceDomani)}
+            </b>
+
+            <p>
+                Il punteggio di domani tiene conto
+                soprattutto della posizione nella finestra
+                temporale, oltre alle condizioni meteo previste.
+            </p>
+
+        </div>
+
+
+        <h3>
+            ⭐ Miglior giorno nei prossimi 14 giorni
+        </h3>
+
+        <div class="finestra">
+
+            <b>
+                ${formatDataCompleta(r.migliorGiorno)}
+            </b>
+
+            <br>
+
+            Indice:
+            <b>${migliorIndice}/100</b>
+
+        </div>
+
+
+        <hr>
+
+        <h3>
+            🧠 Come viene costruito l'indice
+        </h3>
+
+        <div class="explain">
+
+            <b>💧 Acqua:</b>
+            ${r.acqua}/25
+            — peso dell'evento di pioggia.
+
+            <br>
+
+            <b>❄️ Shock termico:</b>
+            ${r.shock}/15
+            — calo termico stimato dopo l'evento.
+
+            <br>
+
+            <b>⏱️ Timing:</b>
+            ${Math.max(
+                r.timingEstate,
+                r.timingAutunno
+            )}/25
+            — posizione nel countdown.
+
+            <br>
+
+            <b>🌡️ Temperatura:</b>
+            ${r.temperatura}/15
+
+            <br>
+
+            <b>💦 Umidità:</b>
+            ${r.umidita}/10
+
+            <br>
+
+            <b>⛰️ Altitudine:</b>
+            ${r.alt}/5
+
+        </div>
+
+
+        <hr>
+
+        <h3>
+            📅 Analisi giorno per giorno
+        </h3>
+
+        <div class="forecast-grid">
+    `;
+
+
+    /* =========================
+       CARDS 14 GIORNI
+       ========================= */
+
+    for(
+        let i=0;
+        i<r.giorniForecast.length;
+        i++
+    ){
+
+        const best=
+            i===r.migliorPosizione
+            ? "best"
+            : "";
+
+        const p=
+            valore(
+                r.pioggeForecast[i]
+            ) || 0;
+
+        const um=
+            valore(
+                r.umiditaForecast[i]
+            ) || 0;
+
+        const min=
+            valore(
+                r.tempMin[i]
+            );
+
+        const max=
+            valore(
+                r.tempMax[i]
+            );
+
+        const prob=
+            valore(
+                r.probPioggia[i]
+            ) || 0;
+
+        html+=`
+
+            <div class="day-card ${best}">
+
+                <div class="date">
+
+                    ${nomeGiorno(
+                        r.giorniForecast[i]
+                    )}
+
+                    <br>
+
+                    ${formatData(
+                        r.giorniForecast[i]
+                    )}
+
+                </div>
+
+                <hr>
+
+                <div class="rain">
+                    🌧️ ${p.toFixed(1)} mm
+                </div>
+
+                <div class="humidity">
+                    💧 ${um.toFixed(0)} %
+                </div>
+
+                <div class="temp">
+
+                    🌡️
+                    ${
+                        min!==null
+                        ? min.toFixed(1)
+                        : "N/D"
+                    }
+                    /
+                    ${
+                        max!==null
+                        ? max.toFixed(1)
+                        : "N/D"
+                    }
+                    °C
+
+                </div>
+
+                <div>
+                    ☔ ${prob}%
+                </div>
+
+                <hr>
+
+                <div class="score">
+                    ${r.punteggiGiornalieri[i]}/100
+                </div>
+
+                ${
+                    r.giorniForecast[i]===
+                    r.domani
+                    ? "<div>➡️ DOMANI</div>"
+                    : ""
+                }
+
+                ${
+                    i===r.migliorPosizione
+                    ? "<div>⭐ MIGLIORE</div>"
+                    : ""
+                }
+
+            </div>
+
+        `;
+    }
+
+
+    html+=`
+
+        </div>
+
+
+        <p class="legend">
+            🟢 ≥75 molto interessante •
+            🟡 50–74 intermedio •
+            🔴 &lt;50 debole
+        </p>
+
+
+        <div class="warning">
+
+            ⚠️ <b>Nota:</b>
+            questo sistema è un modello empirico
+            meteorologico. Non garantisce la nascita
+            dei funghi.
+
+            La fruttificazione reale dipende anche da
+            specie, terreno, bosco, esposizione,
+            vento, sole e condizioni precedenti.
+
+            Le finestre 12–14 e 15–18 giorni sono
+            utilizzate qui come regole indicative
+            del modello, non come certezza biologica.
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "risultato"
+    ).innerHTML=html;
+}
+
+
+/* =========================================================
+   GRAFICO
+   ========================================================= */
+
 function costruisciGrafico(r){
- const labels=[...r.giorniStorico,...r.giorniForecast];
- const rain=[...r.pioggeStorico,...r.pioggeForecast];
- const temps=[...r.temperatureStorico,...r.tempMax.map((x,i)=>x!=null&&r.tempMin[i]!=null?(x+r.tempMin[i])/2:null)];
- const ctx=document.getElementById("grafico");if(grafico)grafico.destroy();
- grafico=new Chart(ctx,{data:{labels,datasets:[
-  {type:"bar",label:"Pioggia mm",data:rain,backgroundColor:"rgba(33,150,243,.35)",borderColor:"#1565c0",borderWidth:1,yAxisID:"y"},
-  {type:"line",label:"Temperatura °C",data:temps,borderColor:"#d32f2f",tension:.35,fill:false,yAxisID:"y1"}
- ]},options:{responsive:true,interaction:{mode:"index",intersect:false},scales:{y:{beginAtZero:true,title:{display:true,text:"Pioggia mm"}},y1:{position:"right",title:{display:true,text:"Temperatura °C"},grid:{drawOnChartArea:false}}}}});
+
+    const labels=[
+        ...r.giorniStorico,
+        ...r.giorniForecast
+    ];
+
+    const pioggia=[
+        ...r.pioggeStorico,
+        ...r.pioggeForecast
+    ];
+
+    const temperature=[
+        ...r.temperatureStorico,
+        ...r.tempMax.map(
+            (v,i)=>{
+
+                const max=
+                    valore(v);
+
+                const min=
+                    valore(
+                        r.tempMin[i]
+                    );
+
+                if(
+                    max===null ||
+                    min===null
+                ){
+                    return null;
+                }
+
+                return (
+                    max+min
+                )/2;
+            }
+        )
+    ];
+
+    const ctx=
+        document.getElementById(
+            "grafico"
+        );
+
+    if(grafico){
+        grafico.destroy();
+    }
+
+    grafico=new Chart(
+        ctx,
+        {
+            data:{
+                labels:labels,
+
+                datasets:[
+
+                    {
+                        type:"bar",
+                        label:"Pioggia mm",
+                        data:pioggia,
+
+                        backgroundColor:
+                            labels.map(
+                                (_,i)=>
+                                    i<
+                                    r.giorniStorico.length
+                                    ? "rgba(33,150,243,.45)"
+                                    : "rgba(76,175,80,.45)"
+                            ),
+
+                        borderColor:"#1565c0",
+                        borderWidth:1,
+                        yAxisID:"y"
+                    },
+
+                    {
+                        type:"line",
+                        label:"Temperatura °C",
+                        data:temperature,
+
+                        borderColor:"#d32f2f",
+                        backgroundColor:
+                            "rgba(211,47,47,.1)",
+
+                        tension:.35,
+                        fill:false,
+                        yAxisID:"y1"
+                    }
+
+                ]
+            },
+
+            options:{
+
+                responsive:true,
+
+                interaction:{
+                    mode:"index",
+                    intersect:false
+                },
+
+                scales:{
+
+                    y:{
+                        beginAtZero:true,
+                        position:"left",
+
+                        title:{
+                            display:true,
+                            text:"Pioggia mm"
+                        }
+                    },
+
+                    y1:{
+                        position:"right",
+
+                        title:{
+                            display:true,
+                            text:"Temperatura °C"
+                        },
+
+                        grid:{
+                            drawOnChartArea:false
+                        }
+                    }
+
+                }
+
+            }
+        }
+    );
 }
 
-/* ---------- grid 250 m ---------- */
-function offsetCoord(lat,lon,dx,dy){
- const dLat=dy/111320,dLon=dx/(111320*Math.cos(rad(lat)));
- return {lat:lat+dLat,lon:lon+dLon};
-}
-async function calcolaCella(base,dx,dy,baseR){
- const p=offsetCoord(base.lat,base.lon,dx,dy);
- const terreno=await recuperaTerreno(p.lat,p.lon);
- const hab=await rilevaHabitat(p.lat,p.lon);
- const fake={evento:baseR.evento,terreno:terr,tempMedia7:baseR.tempMedia7,umiditaMedia7:baseR.umiditaMedia7};
- const scores=Object.keys(HABITAT).map(h=>[h,calcolaHabitatScore(fake,h,baseR.domani)]);
- scores.sort((a,b)=>b[1]-a[1]);
- return {...p,dx,dy,terreno:terr,habitat:hab,scores,score:scores[0][1]};
-}
-async function mostraGrigliaSelezionata(){
- const idx=Number(document.getElementById("localita").value),base=LOCALITA[idx];
- const status=document.getElementById("gridStatus");status.textContent="⏳ Calcolo griglia 3×3...";
- if(!gridMap){
-  gridMap=L.map("gridMap").setView([base.lat,base.lon],13);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(gridMap);
-  gridLayer=L.layerGroup().addTo(gridMap);
- }
- try{
-  const baseR=await calcolaLocalita(base);gridLayer.clearLayers();
-  const cells=[];
-  for(let y=-1;y<=1;y++)for(let x=-1;x<=1;x++)cells.push([x,y]);
-  const out=[];
-  for(let i=0;i<cells.length;i+=3){
-   const batch=await Promise.all(cells.slice(i,i+3).map(([x,y])=>calcolaCella(base,x*MODELLO.gridStepMeters,y*MODELLO.gridStepMeters,baseR)));
-   out.push(...batch);status.textContent=`⏳ Griglia: ${out.length}/9 celle...`;
-  }
-  out.sort((a,b)=>b.score-a.score);
-  out.forEach(c=>{
-   const radius=110, col=color(c.score);
-   L.circle([c.lat,c.lon],{radius,color:col,fillColor:col,fillOpacity:.38,weight:2}).bindPopup(`<b>🍄 Cella ${c.score}/100</b><br>🎯 ${HABITAT[c.scores[0][0]].icon} ${HABITAT[c.scores[0][0]].nome}<br>⛰️ ${Math.round(c.terreno.elevazione)} m<br>📐 ${c.terreno.pendenza.toFixed(1)}°<br>🧭 ${c.terreno.esposizioneNome}`).addTo(gridLayer);
-  });
-  gridMap.fitBounds(L.latLngBounds(out.map(c=>[c.lat,c.lon])),{padding:[20,20]});
-  let html="<h3>🏆 Celle migliori</h3>";
-  out.slice(0,5).forEach((c,i)=>html+=`<div class="observation">#${i+1} <b>${c.score}/100</b> — ${HABITAT[c.scores[0][0]].icon} ${HABITAT[c.scores[0][0]].nome} — ${Math.round(c.terreno.elevazione)} m — ${c.terreno.esposizioneNome}</div>`);
-  document.getElementById("gridRanking").innerHTML=html;
-  status.innerHTML=`✅ Griglia completata per <b>${escapeHtml(base.nome)}</b>. La cella migliore è <b>${out[0].score}/100</b>.`;
- }catch(e){console.error(e);status.textContent="❌ "+e.message}
-}
-function centraSelezionata(){
- const loc=LOCALITA[Number(document.getElementById("localita").value)];
- inizializzaMappa();mappa.setView([loc.lat,loc.lon],13);
-}
 
-/* ---------- init ---------- */
-function initSelects(){
- const s=document.getElementById("localita"),o=document.getElementById("obsLocalita"),h=document.getElementById("obsHabitat");
- LOCALITA.forEach((l,i)=>{s.innerHTML+=`<option value="${i}">${escapeHtml(l.nome)}</option>`;o.innerHTML+=`<option value="${i}">${escapeHtml(l.nome)}</option>`});
- Object.keys(HABITAT).forEach(k=>h.innerHTML+=`<option value="${k}">${HABITAT[k].icon} ${HABITAT[k].nome}</option>`);
- renderCalibration();
-}
-window.addEventListener("load",()=>{
- initSelects();inizializzaMappa();
- /* Se vuoi evitare richieste automatiche all'apertura, commenta la riga seguente. */
- analizzaTutteLeLocalita();
-});
+/* =========================================================
+   AVVIO AUTOMATICO
+   ========================================================= */
+
+window.addEventListener(
+    "load",
+    ()=>{
+        inizializzaMappa();
+
+        /*
+         * Carichiamo automaticamente il radar.
+         * Se preferisci non fare richieste all'apertura,
+         * puoi commentare la riga seguente.
+         */
+        analizzaTutteLeLocalita();
+    }
+);
+
 </script>
+
 </body>
 </html>
