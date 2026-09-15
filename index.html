@@ -348,6 +348,20 @@ hr{
     margin:22px 0;
 }
 
+.timeline-mini{margin-top:12px;background:#f7f9f7;border-radius:10px;padding:10px;overflow:hidden}
+.timeline-track{display:flex;align-items:center;gap:3px;min-width:620px;font-size:11px}
+.timeline-segment{height:11px;border-radius:5px;background:#cfd8dc;flex:1;position:relative}
+.timeline-segment.green{background:#66bb6a}
+.timeline-segment.yellow{background:#fbc02d}
+.timeline-segment.red{background:#ef9a9a}
+.timeline-segment.now{outline:3px solid #263238;outline-offset:1px}
+.timeline-marker{display:flex;flex-direction:column;align-items:center;min-width:34px;font-weight:bold}
+.timeline-marker .icon{font-size:18px;line-height:20px}
+.timeline-label{margin-top:5px;font-size:11px;color:#555}
+.timeline-now{margin-top:8px;font-size:12px;font-weight:bold}
+.timeline-note{margin-top:5px;font-size:12px;color:#555}
+.rank-timeline{overflow-x:auto;padding-bottom:2px}
+.event-mini{margin-top:8px;font-size:13px;line-height:1.45}
 .small-note{
     font-size:12px;
     color:#777;
@@ -415,7 +429,24 @@ hr{
 
 <div id="radarGenerale" class="result">
 
-    <h2>🗺️ Mappa Radar Buttata</h2>
+    <h2>
+    <svg width="30" height="30" viewBox="0 0 64 64"
+         aria-hidden="true"
+         style="vertical-align:-7px;margin-right:6px">
+        <circle cx="32" cy="32" r="27"
+                fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="32" cy="32" r="18"
+                fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="32" cy="32" r="4" fill="currentColor"/>
+        <path d="M32 32 L52 18"
+              fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round"/>
+        <path d="M10 32 A22 22 0 0 1 32 10"
+              fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round"/>
+    </svg>
+    Mappa Radar Buttata
+</h2>
 
     <p>
         Premi <b>“Aggiorna Mappa Radar + Classifica”</b> per confrontare
@@ -430,6 +461,13 @@ hr{
 
     <div class="ranking">
         <h3>🏆 Dove conviene andare domani?</h3>
+
+    <p class="small-note">
+        La classifica usa il punteggio previsto per domani.
+        Sotto ogni località trovi la timeline della possibile buttata:
+        🌧️ giorno 0 → 🟢 12–14 giorni → 🟡 15–18 giorni.
+        Il bordo scuro evidenzia il giorno attuale del countdown.
+    </p>
 
         <div id="classifica">
             <p class="small-note">
@@ -1714,6 +1752,99 @@ function creaMarkerRadar(risultato){
    CLASSIFICA
    ========================================================= */
 
+function costruisciTimeline(r){
+
+    if(!r.evento){
+        return `
+        <div class="timeline-mini">
+            <b>⏱️ Countdown</b>
+            <div class="timeline-note">
+                Nessun evento di pioggia rilevante individuato: countdown non attivo.
+            </div>
+        </div>`;
+    }
+
+    const trascorsi=Math.max(0,Number(r.evento.giorniTrascorsi)||0);
+    const totale=18;
+    let segmenti="";
+
+    for(let giorno=0;giorno<=totale;giorno++){
+        let classe="red";
+
+        if(
+            giorno>=MODELLO.estateMin &&
+            giorno<=MODELLO.estateMax
+        ){
+            classe="green";
+        }else if(
+            giorno>=MODELLO.autunnoMin &&
+            giorno<=MODELLO.autunnoMax
+        ){
+            classe="yellow";
+        }
+
+        const oggi=trascorsi===giorno ? " now" : "";
+
+        segmenti+=`
+            <div
+                class="timeline-segment ${classe}${oggi}"
+                title="Giorno ${giorno}">
+            </div>`;
+    }
+
+    let stato="";
+
+    if(trascorsi<MODELLO.estateMin){
+        stato=`⏳ Mancano ${MODELLO.estateMin-trascorsi} giorni all'inizio della finestra estiva (12–14).`;
+    }else if(trascorsi<=MODELLO.estateMax){
+        stato=`🟢 FINESTRA ESTIVA ATTIVA — giorno ${trascorsi}.`;
+    }else if(trascorsi<MODELLO.autunnoMin){
+        stato=`⏳ Finestra estiva terminata; mancano ${MODELLO.autunnoMin-trascorsi} giorni alla finestra autunnale (15–18).`;
+    }else if(trascorsi<=MODELLO.autunnoMax){
+        stato=`🟡 FINESTRA AUTUNNALE ATTIVA — giorno ${trascorsi}.`;
+    }else{
+        stato=`🔴 Finestra 12–18 giorni trascorsa — evento da rivalutare.`;
+    }
+
+    return `
+    <div class="timeline-mini">
+        <b>📅 Timeline buttata — giorno 0 → 18</b>
+
+        <div class="rank-timeline">
+            <div class="timeline-track">
+                <div class="timeline-marker">
+                    <div class="icon">🌧️</div>
+                    <div class="timeline-label">0</div>
+                </div>
+
+                ${segmenti}
+
+                <div class="timeline-marker">
+                    <div class="icon">⭐</div>
+                    <div class="timeline-label">14</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-now">
+            ${stato}
+        </div>
+
+        <div class="event-mini">
+            🌧️ Evento: <b>${formatDataCompleta(r.evento.data)}</b>
+            • ${Number(r.evento.pioggia).toFixed(1)} mm
+            • ❄️ shock ${Number(r.evento.shock).toFixed(1)} °C
+            • ⏱️ ${trascorsi} giorni trascorsi
+        </div>
+
+        <div class="timeline-note">
+            🔴 fuori finestra &nbsp; 🟢 12–14 giorni &nbsp; 🟡 15–18 giorni
+            • il bordo scuro indica il giorno attuale del countdown.
+        </div>
+    </div>`;
+}
+
+
 function costruisciClassifica(
     risultati
 ){
@@ -1802,6 +1933,8 @@ function costruisciClassifica(
                     ${r.indice}/100
 
                 </div>
+
+                ${costruisciTimeline(r)}
 
             </div>
 
@@ -2328,6 +2461,8 @@ function costruisciDettaglio(r){
 
         </div>
 
+
+        ${costruisciTimeline(r)}
 
         <div class="finestra">
 
