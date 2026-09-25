@@ -10,13 +10,13 @@
 .container{max-width:1200px;margin:auto;background:rgba(255,255,255,.97);padding:24px;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
 h1{margin:0 0 6px;font-size:30px}.subtitle{margin:0 0 20px;color:#607d68}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}select,button{font:inherit;border-radius:10px;padding:12px 14px;border:1px solid #c7d0c8}select{min-width:270px;background:#fff}button{cursor:pointer;background:#2e7d32;color:#fff;border:0;font-weight:700}button.secondary{background:#455a64}button:disabled{opacity:.6;cursor:wait}
 .result{background:#fff;border:1px solid #e2e7e2;border-radius:16px;padding:20px;margin:18px 0}.small{font-size:13px;color:#607d68}.status{border-radius:14px;padding:16px;margin-bottom:18px}.good{background:#e8f5e9;border:1px solid #a5d6a7}.medium{background:#fff8e1;border:1px solid #ffe082}.low{background:#ffebee;border:1px solid #ef9a9a}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.card{border:1px solid #e4e9e4;border-radius:12px;padding:13px;background:#fafcf9}.label{font-size:12px;color:#607d68}.value{font-size:20px;font-weight:700;margin-top:5px}.section-title{margin:24px 0 10px}.bar{height:9px;background:#e6ece6;border-radius:99px;overflow:hidden;margin-top:8px}.bar>span{display:block;height:100%;background:#4caf50}.timeline{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}.day{border:1px solid #d9e1d9;border-radius:10px;padding:8px 4px;text-align:center;font-size:12px}.day strong{display:block;font-size:18px}.day.goodday{background:#e8f5e9}.day.midday{background:#fff8e1}.day.lowday{background:#ffebee}.rank{border:1px solid #e0e6e0;border-radius:14px;padding:15px;margin:10px 0}.rankhead{display:flex;justify-content:space-between;gap:10px;align-items:center}.score{font-size:25px;font-weight:800}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.chip{padding:6px 9px;border-radius:999px;background:#edf3ed;font-size:12px}.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}.why .card{font-size:13px}.loading{text-align:center;padding:25px}.note{background:#f5f7f5;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}.obs{display:flex;gap:10px;flex-wrap:wrap}.obs label{border:1px solid #d6ded6;border-radius:10px;padding:8px 10px;background:#fff}.obs input{margin-right:6px}canvas{max-height:420px}.footer{font-size:12px;color:#607d68;margin-top:20px;line-height:1.5}@media(max-width:600px){body{padding:8px}.container{padding:15px}.timeline{grid-template-columns:repeat(4,1fr)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.card{border:1px solid #e4e9e4;border-radius:12px;padding:13px;background:#fafcf9}.label{font-size:12px;color:#607d68}.value{font-size:20px;font-weight:700;margin-top:5px}.section-title{margin:24px 0 10px}.bar{height:9px;background:#e6ece6;border-radius:99px;overflow:hidden;margin-top:8px}.bar>span{display:block;height:100%;background:#4caf50}.timeline{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}.day{border:1px solid #d9e1d9;border-radius:10px;padding:8px 4px;text-align:center;font-size:12px}.day strong{display:block;font-size:18px}.day.goodday{background:#e8f5e9}.day.midday{background:#fff8e1}.day.lowday{background:#ffebee}.rank{border:1px solid #e0e6e0;border-radius:14px;padding:15px;margin:10px 0}.rankhead{display:flex;justify-content:space-between;gap:10px;align-items:center}.score{font-size:25px;font-weight:800}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.chip{padding:6px 9px;border-radius:999px;background:#edf3ed;font-size:12px}.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}.why .card{font-size:13px}.loading{text-align:center;padding:25px}.terrain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}.source{font-size:11px;color:#78909c;margin-top:5px}.note{background:#f5f7f5;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}.obs{display:flex;gap:10px;flex-wrap:wrap}.obs label{border:1px solid #d6ded6;border-radius:10px;padding:8px 10px;background:#fff}.obs input{margin-right:6px}canvas{max-height:420px}.footer{font-size:12px;color:#607d68;margin-top:20px;line-height:1.5}@media(max-width:600px){body{padding:8px}.container{padding:15px}.timeline{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>🍄 Analizzatore Finestra Porcini +7</h1>
-<p class="subtitle">Open-Meteo • storico 45 giorni • previsione 14 giorni • analisi della finestra futura di 7 giorni</p>
+<p class="subtitle">Open-Meteo • storico 45 giorni • previsione 14 giorni • suolo • topografia • uso del territorio • finestra futura +7</p>
 
 <div class="controls">
 <select id="localita"></select>
@@ -84,15 +84,87 @@ function statusClass(s){return s>=75?'good':s>=50?'medium':'low';}
 function labelScore(s){return s>=75?'🟢 Finestra favorevole':s>=50?'🟡 Finestra da monitorare':'🔴 Condizioni poco favorevoli';}
 function selectedObservations(){return [...document.querySelectorAll('.obs input:checked')].map(x=>x.value);}
 
-async function getJson(url){const r=await fetch(url);if(!r.ok)throw new Error('Risposta non disponibile da Open-Meteo ('+r.status+')');return r.json();}
-async function recuperaAltitudine(lat,lon){const j=await getJson(`https://api.open-meteo.com/v1/elevation?latitude=${lat}&longitude=${lon}`);return num(j.elevation?.[0]);}
+async function getJson(url, label='servizio esterno'){
+ const r=await fetch(url);
+ if(!r.ok) throw new Error(`Risposta non disponibile da ${label} (${r.status})`);
+ return r.json();
+}
+
 async function recuperaProfiloTerreno(lat,lon){
- const d=.01;
- const pts=[`${lat},${lon}`,`${lat+d},${lon}`,`${lat-d},${lon}`,`${lat},${lon+d}`,`${lat},${lon-d}`].join('&latitude=');
- const url='https://api.open-meteo.com/v1/elevation?latitude='+pts;
- const j=await getJson(url);const e=(j.elevation||[]).map(Number);if(e.length<5)return {quota:e[0]??null,pendenza:null,esposizione:null};
- const ns=(e[1]-e[2])/2, ew=(e[3]-e[4])/2;const metersPerDegLat=111320;const metersPerDegLon=111320*Math.cos(lat*Math.PI/180);const dzN=ns,dzE=ew;const slope=Math.atan(Math.sqrt((dzN/metersPerDegLat/d*.0||0)**2+(dzE/metersPerDegLon/d*.0||0)**2));
- const riseN=(e[1]-e[2])/(2*d*metersPerDegLat),riseE=(e[3]-e[4])/(2*d*metersPerDegLon);const slopeDeg=Math.atan(Math.sqrt(riseN**2+riseE**2))*180/Math.PI;let aspect=(Math.atan2(-riseE,-riseN)*180/Math.PI+360)%360;let nome=aspect<22.5||aspect>=337.5?'N':aspect<67.5?'NE':aspect<112.5?'E':aspect<157.5?'SE':aspect<202.5?'S':aspect<247.5?'SO':aspect<292.5?'O':'NO';return {quota:e[0],pendenza:slopeDeg,esposizione:nome};
+ // Profilo topografico locale ricavato dal DEM GLO-90 di Copernicus tramite Open-Meteo.
+ // Usiamo 8 punti attorno alla coordinata per stimare pendenza, esposizione e rilievo locale.
+ const d=.0025;
+ const pts=[
+  [lat,lon],[lat+d,lon],[lat-d,lon],[lat,lon+d],[lat,lon-d],
+  [lat+d,lon+d],[lat+d,lon-d],[lat-d,lon+d],[lat-d,lon-d]
+ ];
+ const latitudes=pts.map(p=>p[0]).join(',');
+ const longitudes=pts.map(p=>p[1]).join(',');
+ const j=await getJson(`https://api.open-meteo.com/v1/elevation?latitude=${latitudes}&longitude=${longitudes}`,'Open-Meteo Elevation');
+ const e=(j.elevation||[]).map(num);
+ if(e.length<9 || e.some(x=>x===null)) return {quota:e[0]??null,pendenza:null,esposizione:null,rilievo:null,dislivello:null};
+ const mLat=111320, mLon=111320*Math.cos(lat*Math.PI/180);
+ const dzN=(e[1]-e[2])/(2*d*mLat);
+ const dzE=(e[3]-e[4])/(2*d*mLon);
+ const slopeDeg=Math.atan(Math.sqrt(dzN*dzN+dzE*dzE))*180/Math.PI;
+ let aspect=(Math.atan2(-dzE,-dzN)*180/Math.PI+360)%360;
+ const dirs=['N','NE','E','SE','S','SO','O','NO'];
+ const dir=dirs[Math.round(aspect/45)%8];
+ const local=[...e.slice(1)];
+ const min=Math.min(...local),max=Math.max(...local);
+ const relief=max-min;
+ let classeRilievo=relief<10?'molto lieve':relief<25?'lieve':relief<50?'moderato':'marcato';
+ return {quota:e[0],pendenza:slopeDeg,esposizione:dir,azimut:aspect,rilievo:classeRilievo,dislivello:relief};
+}
+
+async function recuperaUsoSuoloOSM(lat,lon){
+ // OSM viene usato solo come indicatore descrittivo. Se il servizio non risponde,
+ // il modello continua a funzionare senza inventare il tipo di bosco.
+ try{
+  const q=`[out:json][timeout:8];(way(around:300,${lat},${lon})[landuse=forest];way(around:300,${lat},${lon})[natural=wood];relation(around:300,${lat},${lon})[landuse=forest];relation(around:300,${lat},${lon})[natural=wood];way(around:300,${lat},${lon})[natural=heath];way(around:300,${lat},${lon})[landuse=meadow];way(around:300,${lat},${lon})[natural=grassland];);out tags;`;
+  const j=await getJson('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q),'OpenStreetMap Overpass');
+  const tags=(j.elements||[]).map(x=>x.tags||{});
+  const counts={forest:0,wood:0,heath:0,meadow:0,grassland:0};
+  for(const t of tags){
+   if(t.landuse==='forest')counts.forest++;
+   if(t.natural==='wood')counts.wood++;
+   if(t.natural==='heath')counts.heath++;
+   if(t.landuse==='meadow')counts.meadow++;
+   if(t.natural==='grassland')counts.grassland++;
+  }
+  let tipo='Nessun dato OSM vicino';
+  if(counts.forest||counts.wood) tipo='Area forestale/boscata OSM';
+  else if(counts.heath) tipo='Brughiera/arbusteto OSM';
+  else if(counts.meadow||counts.grassland) tipo='Prato/vegetazione erbacea OSM';
+  return {tipo,counts,elementi:tags.length,fonte:'OpenStreetMap / Overpass'};
+ }catch(e){return {tipo:'N/D',counts:{},elementi:0,fonte:'OSM non disponibile'};}
+}
+
+function aggregateHourlyByDate(hourly){
+ const out={};
+ if(!hourly?.time) return out;
+ for(let i=0;i<hourly.time.length;i++){
+  const day=hourly.time[i].slice(0,10);
+  if(!out[day]) out[day]={soil07:[],soil28100:[],soilTemp07:[],soilTemp28100:[],dew:[],vpd:[],rad:[]};
+  const push=(key,val)=>{if(num(val)!==null)out[day][key].push(Number(val));};
+  push('soil07',hourly.soil_moisture_0_to_7cm?.[i]);
+  push('soil28100',hourly.soil_moisture_28_to_100cm?.[i]);
+  push('soilTemp07',hourly.soil_temperature_0_to_7cm?.[i]);
+  push('soilTemp28100',hourly.soil_temperature_28_to_100cm?.[i]);
+  push('dew',hourly.dew_point_2m?.[i]);
+  push('vpd',hourly.vapour_pressure_deficit?.[i]);
+  push('rad',hourly.shortwave_radiation?.[i]);
+ }
+ for(const day of Object.values(out)){
+  for(const k of Object.keys(day)) day[k]=media(day[k]);
+ }
+ return out;
+}
+
+function mergeDailyHourly(daily, agg){
+ const keys={soil07:'soil07',soil28100:'soil28100',soilTemp07:'soilTemp07',soilTemp28100:'soilTemp28100',dew:'dew',vpd:'vpd',rad:'rad'};
+ for(const [outKey,aggKey] of Object.entries(keys)) daily[outKey]=(daily.time||[]).map(d=>agg[d]?.[aggKey]??null);
+ return daily;
 }
 
 function scoreTemp(t){if(t===null)return 0;if(t>=12&&t<=18)return 15;if(t>=9&&t<12||t>18&&t<=21)return 10;if(t>=6&&t<9||t>21&&t<=24)return 5;return 0;}
@@ -109,34 +181,53 @@ function findEvents(times,rain,tmin,tmax){const events=[];for(let i=0;i<rain.len
 function lastEventBefore(events,date){let out=null;for(const e of events){if(e.data<=date)out=e;}return out;}
 
 async function calcolaLocalita(localita){
- const oggi=iso(new Date());const d=new Date();d.setDate(d.getDate()-MODELLO.giorniStorico);const start=iso(d);
- const histUrl=`https://archive-api.open-meteo.com/v1/archive?latitude=${localita.lat}&longitude=${localita.lon}&start_date=${start}&end_date=${oggi}&daily=temperature_2m_mean,temperature_2m_min,temperature_2m_max,precipitation_sum,relative_humidity_2m_mean,wind_speed_10m_max,sunshine_duration,et0_fao_evapotranspiration&timezone=auto`;
- const fcUrl=`https://api.open-meteo.com/v1/forecast?latitude=${localita.lat}&longitude=${localita.lon}&forecast_days=14&daily=temperature_2m_mean,temperature_2m_min,temperature_2m_max,precipitation_sum,precipitation_probability_max,relative_humidity_2m_mean,wind_speed_10m_max,sunshine_duration,et0_fao_evapotranspiration&timezone=auto`;
- const [h,f,terrain]=await Promise.all([getJson(histUrl),getJson(fcUrl),recuperaProfiloTerreno(localita.lat,localita.lon)]);
- const hd=h.daily,fd=f.daily;const rain=hd.precipitation_sum||[];const n=rain.length;
+ const oggi=iso(new Date());
+ const d=new Date();d.setDate(d.getDate()-MODELLO.giorniStorico);const start=iso(d);
+ const dailyVars='temperature_2m_mean,temperature_2m_min,temperature_2m_max,precipitation_sum,relative_humidity_2m_mean,wind_speed_10m_max,sunshine_duration,et0_fao_evapotranspiration';
+ const hourlyVars='soil_temperature_0_to_7cm,soil_temperature_28_to_100cm,soil_moisture_0_to_7cm,soil_moisture_28_to_100cm,dew_point_2m,vapour_pressure_deficit,shortwave_radiation';
+ const histUrl=`https://archive-api.open-meteo.com/v1/archive?latitude=${localita.lat}&longitude=${localita.lon}&start_date=${start}&end_date=${oggi}&daily=${dailyVars}&hourly=${hourlyVars}&timezone=auto&cell_selection=land`;
+ const fcUrl=`https://api.open-meteo.com/v1/forecast?latitude=${localita.lat}&longitude=${localita.lon}&forecast_days=14&daily=${dailyVars}&hourly=${hourlyVars}&timezone=auto&cell_selection=land`;
+ const [h,f,terrain,usoSuolo]=await Promise.all([
+  getJson(histUrl,'Open-Meteo storico'),
+  getJson(fcUrl,'Open-Meteo previsione'),
+  recuperaProfiloTerreno(localita.lat,localita.lon),
+  recuperaUsoSuoloOSM(localita.lat,localita.lon)
+ ]);
+ const hd=mergeDailyHourly(h.daily||{},aggregateHourlyByDate(h.hourly||{}));
+ const fd=mergeDailyHourly(f.daily||{},aggregateHourlyByDate(f.hourly||{}));
+ const rain=hd.precipitation_sum||[];const n=rain.length;
  const sumLast=k=>rain.slice(Math.max(0,n-k)).reduce((s,v)=>s+(num(v)||0),0);
  const pioggia3=sumLast(3),pioggia7=sumLast(7),pioggia14=sumLast(14),pioggia20=sumLast(20),pioggia45=sumLast(45);
- const temp7=media(hd.temperature_2m_mean.slice(-7)),hum7=media(hd.relative_humidity_2m_mean.slice(-7)),wind7=media(hd.wind_speed_10m_max.slice(-7)),et07=media(hd.et0_fao_evapotranspiration.slice(-7));
+ const temp7=media((hd.temperature_2m_mean||[]).slice(-7)),hum7=media((hd.relative_humidity_2m_mean||[]).slice(-7)),wind7=media((hd.wind_speed_10m_max||[]).slice(-7)),et07=media((hd.et0_fao_evapotranspiration||[]).slice(-7));
+ const soil07=media((hd.soil07||[]).slice(-7)),soil28100=media((hd.soil28100||[]).slice(-7)),soilTemp07=media((hd.soilTemp07||[]).slice(-7)),soilTemp28100=media((hd.soilTemp28100||[]).slice(-7)),dew7=media((hd.dew||[]).slice(-7)),vpd7=media((hd.vpd||[]).slice(-7));
  const events=findEvents(hd.time,rain,hd.temperature_2m_min||[],hd.temperature_2m_max||[]);const event=lastEventBefore(events,oggi);const daysSince=event?diffDays(event.data,oggi):null;
- const next7Rain=fd.precipitation_sum.slice(0,7).map(x=>num(x)||0);const next7Hum=fd.relative_humidity_2m_mean.slice(0,7);const next7Temp=fd.temperature_2m_mean.slice(0,7);const next7Wind=fd.wind_speed_10m_max.slice(0,7);const next7Et0=fd.et0_fao_evapotranspiration.slice(0,7);
- const daily=[];for(let i=0;i<7;i++){
-   const futureEvent=event?diffDays(event.data,fd.time[i]):null;let s=0;s+=scoreTemp(num(next7Temp[i]));s+=scoreHum(num(next7Hum[i]));s+=scoreTerrain(terrain.pendenza);s+=scoreEvap(num(next7Et0[i]));s+=scoreWind(num(next7Wind[i]));s+=scoreTiming(futureEvent);
-   const p=next7Rain[i];if(p>=3&&p<=25)s+=8;else if(p>=1)s+=4;
-   if((fd.precipitation_probability_max[i]||0)>=60)s+=2;
-   if(i>0&&next7Rain[i-1]>=2&&p>=2)s+=3;
-   daily.push(clamp(Math.round(s),0,100));
+ const next7Rain=(fd.precipitation_sum||[]).slice(0,7).map(x=>num(x)||0);const next7Hum=(fd.relative_humidity_2m_mean||[]).slice(0,7);const next7Temp=(fd.temperature_2m_mean||[]).slice(0,7);const next7Wind=(fd.wind_speed_10m_max||[]).slice(0,7);const next7Et0=(fd.et0_fao_evapotranspiration||[]).slice(0,7);const next7Soil=(fd.soil07||[]).slice(0,7);const next7Vpd=(fd.vpd||[]).slice(0,7);
+ const daily=[];
+ for(let i=0;i<7;i++){
+  const futureEvent=event?diffDays(event.data,fd.time[i]):null;
+  let s=0;
+  s+=scoreTemp(num(next7Temp[i]));s+=scoreHum(num(next7Hum[i]));s+=scoreTerrain(terrain.pendenza);s+=scoreEvap(num(next7Et0[i]));s+=scoreWind(num(next7Wind[i]));s+=scoreTiming(futureEvent);
+  const p=next7Rain[i];if(p>=3&&p<=25)s+=8;else if(p>=1)s+=4;
+  const prob=num(fd.precipitation_probability_max?.[i]);if(prob!==null&&prob>=60)s+=2;
+  const sm=num(next7Soil[i]);if(sm!==null){if(sm>=.25&&sm<=.55)s+=8;else if(sm>=.18&&sm<.25||sm>.55&&sm<=.65)s+=5;else if(sm>=.12)s+=2;}
+  const vpd=num(next7Vpd[i]);if(vpd!==null){if(vpd<=.8)s+=5;else if(vpd<=1.4)s+=3;else if(vpd<=2)s+=1;}
+  if(i>0&&next7Rain[i-1]>=2&&p>=2)s+=3;
+  daily.push(clamp(Math.round(s),0,100));
  }
  const avg7=Math.round(media(daily));const peak=Math.max(...daily);const peakIndex=daily.indexOf(peak);const peakDate=fd.time[peakIndex];
- const base=clamp(Math.round(scoreRain7(pioggia7)+scoreRainDistribution(rain.slice(-14))+scoreTemp(temp7)+scoreHum(hum7)+scoreEvap(et07)+scoreWind(wind7)+scoreTerrain(terrain.pendenza)+scoreTiming(daysSince)+obsScore()),0,100);
+ let soilScore=0;if(soil07!==null){if(soil07>=.25&&soil07<=.55)soilScore=8;else if(soil07>=.18&&soil07<.25||soil07>.55&&soil07<=.65)soilScore=5;else if(soil07>=.12)soilScore=2;}
+ let vpdScore=0;if(vpd7!==null){if(vpd7<=.8)vpdScore=5;else if(vpd7<=1.4)vpdScore=3;else if(vpd7<=2)vpdScore=1;}
+ const habitatScore=(usoSuolo.tipo.includes('forest')||usoSuolo.tipo.includes('forestale')||usoSuolo.tipo.includes('boscata'))?5:0;
+ const base=clamp(Math.round(scoreRain7(pioggia7)+scoreRainDistribution(rain.slice(-14))+scoreTemp(temp7)+scoreHum(hum7)+scoreEvap(et07)+scoreWind(wind7)+scoreTerrain(terrain.pendenza)+scoreTiming(daysSince)+soilScore+vpdScore+habitatScore+obsScore()),0,100);
  const futureBonus=Math.round(avg7*.35);const indice=clamp(Math.round(base*.65+futureBonus),0,100);
- return {localita,oggi,terrain,pioggia3,pioggia7,pioggia14,pioggia20,pioggia45,temp7,hum7,wind7,et07,events,event,daysSince,fd,hd,daily,avg7,peak,peakDate,indice,base,obs:selectedObservations()};
+ return {localita,oggi,terrain,usoSuolo,pioggia3,pioggia7,pioggia14,pioggia20,pioggia45,temp7,hum7,wind7,et07,soil07,soil28100,soilTemp07,soilTemp28100,dew7,vpd7,events,event,daysSince,fd,hd,daily,avg7,peak,peakDate,indice,base,obs:selectedObservations()};
 }
 
-function renderRank(r,i){return `<div class="rank"><div class="rankhead"><div><b>#${i+1} — ${r.localita.nome}</b><div class="small">Picco previsto ${fmt(r.peakDate)} • media +7 giorni ${r.avg7}/100</div></div><div class="score">${r.indice}/100</div></div><div class="bar"><span style="width:${r.indice}%"></span></div><div class="chips"><span class="chip">🌧️ 7 gg: ${r.pioggia7.toFixed(1)} mm</span><span class="chip">🌡️ ${r.temp7?.toFixed(1)??'N/D'} °C</span><span class="chip">💧 ${r.hum7?.toFixed(0)??'N/D'}%</span><span class="chip">⛰️ ${r.terrain.quota?.toFixed(0)??'N/D'} m</span><span class="chip">🧭 ${r.terrain.esposizione??'N/D'}</span></div></div>`;}
+function renderRank(r,i){return `<div class="rank"><div class="rankhead"><div><b>#${i+1} — ${r.localita.nome}</b><div class="small">Picco previsto ${fmt(r.peakDate)} • media +7 giorni ${r.avg7}/100</div></div><div class="score">${r.indice}/100</div></div><div class="bar"><span style="width:${r.indice}%"></span></div><div class="chips"><span class="chip">🌧️ 7 gg: ${r.pioggia7.toFixed(1)} mm</span><span class="chip">🌡️ ${r.temp7?.toFixed(1)??'N/D'} °C</span><span class="chip">💧 ${r.hum7?.toFixed(0)??'N/D'}%</span><span class="chip">🌱 Suolo ${r.soil07!==null?(r.soil07*100).toFixed(0)+'%':'N/D'}</span><span class="chip">⛰️ ${r.terrain.quota?.toFixed(0)??'N/D'} m</span><span class="chip">🧭 ${r.terrain.esposizione??'N/D'}</span><span class="chip">🌲 ${r.usoSuolo.tipo}</span></div></div>`;}
 
-async function analizzaTutteLeLocalita(){const b=$('radarBtn');b.disabled=true;$('radarStato').textContent='⏳ Analizzo tutte le coordinate...';$('classifica').innerHTML='<div class="loading">Recupero storico, previsione e profilo topografico...</div>';try{risultatiRadar=await Promise.all(LOCALITA.map(calcolaLocalita));risultatiRadar.sort((a,b)=>b.indice-a.indice);$('classifica').innerHTML=risultatiRadar.map(renderRank).join('');const m=risultatiRadar[0];$('radarStato').innerHTML=`<b>✅ Analisi completata.</b> ${risultatiRadar.length} coordinate. La classifica è basata sulla finestra futura +7, non su domani. Prima posizione: <b>${m.localita.nome}</b> con ${m.indice}/100.`;}catch(e){$('radarStato').textContent='❌ '+e.message;$('classifica').innerHTML='';}finally{b.disabled=false;}}
+async function analizzaTutteLeLocalita(){const b=$('radarBtn');b.disabled=true;$('radarStato').textContent='⏳ Analizzo tutte le coordinate...';$('classifica').innerHTML='<div class="loading">Recupero storico, suolo, topografia e uso del territorio...</div>';try{risultatiRadar=await Promise.all(LOCALITA.map(calcolaLocalita));risultatiRadar.sort((a,b)=>b.indice-a.indice);$('classifica').innerHTML=risultatiRadar.map(renderRank).join('');const m=risultatiRadar[0];$('radarStato').innerHTML=`<b>✅ Analisi completata.</b> ${risultatiRadar.length} coordinate. La classifica usa la finestra futura +7. Prima posizione: <b>${m.localita.nome}</b> con ${m.indice}/100, picco ${fmtLong(m.peakDate)}.`;}catch(e){console.error(e);$('radarStato').textContent='❌ '+e.message;$('classifica').innerHTML='<div class="status low">Alcuni servizi territoriali possono non essere disponibili. Riprova.</div>';}finally{b.disabled=false;} }
 
-function renderDetail(r){const s=r.indice;const cls=statusClass(s);const eventTxt=r.event?`${fmtLong(r.event.data)} • ${r.event.pioggia.toFixed(1)} mm • ${r.daysSince} giorni trascorsi`:'Nessun evento ≥ 15 mm individuato nello storico';let days=r.fd.time.slice(0,7).map((d,i)=>{const sc=r.daily[i];return `<div class="day ${sc>=75?'goodday':sc>=50?'midday':'lowday'}"><b>${fmt(d)}</b><strong>${sc}</strong><span>${(r.fd.precipitation_sum[i]||0).toFixed(1)} mm</span></div>`}).join('');$('risultato').innerHTML=`<div class="status ${cls}"><h2>${labelScore(s)}</h2><div class="value">${s}/100</div><p>Indice sperimentale della finestra futura. Il picco attualmente stimato è <b>${fmtLong(r.peakDate)}</b> con ${r.peak}/100.</p></div><h3>📍 Coordinate e territorio</h3><div class="grid"><div class="card"><div class="label">Latitudine</div><div class="value">${r.localita.lat.toFixed(6)}</div></div><div class="card"><div class="label">Longitudine</div><div class="value">${r.localita.lon.toFixed(6)}</div></div><div class="card"><div class="label">Quota</div><div class="value">${r.terrain.quota?.toFixed(0)??'N/D'} m</div></div><div class="card"><div class="label">Pendenza stimata</div><div class="value">${r.terrain.pendenza?.toFixed(1)??'N/D'}°</div></div><div class="card"><div class="label">Esposizione</div><div class="value">${r.terrain.esposizione??'N/D'}</div></div></div><h3 class="section-title">💧 Storia idrica</h3><div class="grid"><div class="card"><div class="label">Pioggia 3 giorni</div><div class="value">${r.pioggia3.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 7 giorni</div><div class="value">${r.pioggia7.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 14 giorni</div><div class="value">${r.pioggia14.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 20 giorni</div><div class="value">${r.pioggia20.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 45 giorni</div><div class="value">${r.pioggia45.toFixed(1)} mm</div></div></div><div class="note" style="margin-top:10px">🌧️ Ultimo evento significativo: ${eventTxt}</div><h3 class="section-title">🌡️ Microclima recente</h3><div class="grid"><div class="card"><div class="label">Temperatura media 7 gg</div><div class="value">${r.temp7?.toFixed(1)??'N/D'} °C</div></div><div class="card"><div class="label">Umidità media 7 gg</div><div class="value">${r.hum7?.toFixed(0)??'N/D'} %</div></div><div class="card"><div class="label">Vento max medio 7 gg</div><div class="value">${r.wind7?.toFixed(1)??'N/D'} km/h</div></div><div class="card"><div class="label">Evapotraspirazione ET₀</div><div class="value">${r.et07?.toFixed(1)??'N/D'} mm/g</div></div></div><h3 class="section-title">🔮 Evoluzione prossimi 7 giorni</h3><div class="timeline">${days}</div><h3 class="section-title">🧠 Perché il punteggio è ${s}?</h3><div class="why"><div class="card">💧 Acqua recente<strong>${r.pioggia7.toFixed(1)} mm</strong><div class="bar"><span style="width:${clamp(r.pioggia7,0,100)}%"></span></div></div><div class="card">🌡️ Temperatura<strong>${r.temp7?.toFixed(1)??'N/D'} °C</strong></div><div class="card">💧 Umidità<strong>${r.hum7?.toFixed(0)??'N/D'}%</strong></div><div class="card">🌬️ Evaporazione<strong>${r.et07?.toFixed(1)??'N/D'} mm/g</strong></div><div class="card">⛰️ Pendenza<strong>${r.terrain.pendenza?.toFixed(1)??'N/D'}°</strong></div><div class="card">🔭 Media futura<strong>${r.avg7}/100</strong></div></div><div class="note" style="margin-top:12px">🍄 Indicatori biologici selezionati: ${r.obs.length?r.obs.join(', '):'nessuno'}. Questi dati sono inseriti manualmente e usati soltanto come correttivo leggero.</div>`;}
+function renderDetail(r){const s=r.indice;const cls=statusClass(s);const eventTxt=r.event?`${fmtLong(r.event.data)} • ${r.event.pioggia.toFixed(1)} mm • ${r.daysSince} giorni trascorsi`:'Nessun evento ≥ 15 mm individuato nello storico';let days=r.fd.time.slice(0,7).map((d,i)=>{const sc=r.daily[i];return `<div class="day ${sc>=75?'goodday':sc>=50?'midday':'lowday'}"><b>${fmt(d)}</b><strong>${sc}</strong><span>${(r.fd.precipitation_sum[i]||0).toFixed(1)} mm</span><small>suolo ${r.fd.soil07?.[i]!=null?(r.fd.soil07[i]*100).toFixed(0)+'%':'N/D'}</small></div>`}).join('');$('risultato').innerHTML=`<div class="status ${cls}"><h2>${labelScore(s)}</h2><div class="value">${s}/100</div><p>Indice sperimentale della finestra futura. Il picco stimato è <b>${fmtLong(r.peakDate)}</b> con ${r.peak}/100.</p></div><h3>📍 Profilo della coordinata</h3><div class="terrain-grid"><div class="card"><div class="label">Latitudine</div><div class="value">${r.localita.lat.toFixed(6)}</div></div><div class="card"><div class="label">Longitudine</div><div class="value">${r.localita.lon.toFixed(6)}</div></div><div class="card"><div class="label">Quota DEM</div><div class="value">${r.terrain.quota?.toFixed(0)??'N/D'} m</div><div class="source">Copernicus DEM / Open-Meteo</div></div><div class="card"><div class="label">Pendenza stimata</div><div class="value">${r.terrain.pendenza?.toFixed(1)??'N/D'}°</div></div><div class="card"><div class="label">Esposizione</div><div class="value">${r.terrain.esposizione??'N/D'}</div><div class="source">Azimut ${r.terrain.azimut?.toFixed(0)??'N/D'}°</div></div><div class="card"><div class="label">Dislivello locale</div><div class="value">${r.terrain.dislivello?.toFixed(0)??'N/D'} m</div><div class="source">raggio topografico locale</div></div><div class="card"><div class="label">Uso del territorio</div><div class="value" style="font-size:15px">${r.usoSuolo.tipo}</div><div class="source">${r.usoSuolo.fonte}</div></div></div><div class="note" style="margin-top:10px">⚠️ Il tipo di bosco non viene dedotto automaticamente se il database non lo documenta. L'uso del suolo OSM è un indicatore descrittivo, non una verifica botanica sul campo.</div><h3 class="section-title">🌱 Stato del suolo</h3><div class="grid"><div class="card"><div class="label">Umidità suolo 0–7 cm</div><div class="value">${r.soil07!==null?(r.soil07*100).toFixed(1)+'%':'N/D'}</div></div><div class="card"><div class="label">Umidità suolo 28–100 cm</div><div class="value">${r.soil28100!==null?(r.soil28100*100).toFixed(1)+'%':'N/D'}</div></div><div class="card"><div class="label">Temperatura suolo 0–7 cm</div><div class="value">${r.soilTemp07?.toFixed(1)??'N/D'} °C</div></div><div class="card"><div class="label">Temperatura suolo 28–100 cm</div><div class="value">${r.soilTemp28100?.toFixed(1)??'N/D'} °C</div></div><div class="card"><div class="label">Dew point 7 gg</div><div class="value">${r.dew7?.toFixed(1)??'N/D'} °C</div></div><div class="card"><div class="label">VPD 7 gg</div><div class="value">${r.vpd7?.toFixed(2)??'N/D'} kPa</div></div></div><div class="source">Dati suolo/meteo Open-Meteo; umidità del suolo espressa come contenuto volumetrico d'acqua.</div><h3 class="section-title">💧 Storia idrica</h3><div class="grid"><div class="card"><div class="label">Pioggia 3 giorni</div><div class="value">${r.pioggia3.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 7 giorni</div><div class="value">${r.pioggia7.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 14 giorni</div><div class="value">${r.pioggia14.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 20 giorni</div><div class="value">${r.pioggia20.toFixed(1)} mm</div></div><div class="card"><div class="label">Pioggia 45 giorni</div><div class="value">${r.pioggia45.toFixed(1)} mm</div></div></div><div class="note" style="margin-top:10px">🌧️ Ultimo evento significativo: ${eventTxt}</div><h3 class="section-title">🌡️ Microclima recente</h3><div class="grid"><div class="card"><div class="label">Temperatura media 7 gg</div><div class="value">${r.temp7?.toFixed(1)??'N/D'} °C</div></div><div class="card"><div class="label">Umidità media 7 gg</div><div class="value">${r.hum7?.toFixed(0)??'N/D'} %</div></div><div class="card"><div class="label">Vento max medio 7 gg</div><div class="value">${r.wind7?.toFixed(1)??'N/D'} km/h</div></div><div class="card"><div class="label">ET₀ media</div><div class="value">${r.et07?.toFixed(1)??'N/D'} mm/g</div></div></div><h3 class="section-title">🔮 Evoluzione prossimi 7 giorni</h3><div class="timeline">${days}</div><h3 class="section-title">🍄 Bioindicatori osservati</h3><div class="note">${r.obs.length?r.obs.join(' • '):'Nessuno selezionato'}</div><h3 class="section-title">🧠 Lettura del modello</h3><div class="why"><div class="card">💧 Pioggia recente<strong>${r.pioggia7.toFixed(1)} mm</strong></div><div class="card">🌱 Umidità suolo<strong>${r.soil07!==null?(r.soil07*100).toFixed(0)+'%':'N/D'}</strong></div><div class="card">🌡️ Temperatura<strong>${r.temp7?.toFixed(1)??'N/D'} °C</strong></div><div class="card">💨 VPD<strong>${r.vpd7?.toFixed(2)??'N/D'} kPa</strong></div><div class="card">⛰️ Topografia<strong>${r.terrain.pendenza?.toFixed(1)??'N/D'}° • ${r.terrain.esposizione??'N/D'}</strong></div><div class="card">🔭 Media futura<strong>${r.avg7}/100</strong></div></div><div class="note" style="margin-top:12px">L'indice combina condizioni meteorologiche recenti, evoluzione prevista, stato del suolo e fattori topografici. Non è una probabilità statistica di trovare porcini. I dati territoriali esterni possono essere incompleti o aggiornati con frequenza diversa.</div>`;}
 
 function renderChart(r){if(grafico)grafico.destroy();grafico=new Chart($('grafico'),{type:'line',data:{labels:r.fd.time.slice(0,7).map(fmt),datasets:[{label:'Indice finestra +7',data:r.daily.slice(0,7),tension:.3},{label:'Pioggia mm',data:r.fd.precipitation_sum.slice(0,7),tension:.3}]},options:{responsive:true,interaction:{mode:'index',intersect:false},scales:{y:{beginAtZero:true,max:100}}}});}
 async function analizzaLocalitaSelezionata(){const b=$('analizzaBtn');b.disabled=true;$('risultato').innerHTML='<div class="loading">⏳ Recupero meteo, storico e profilo topografico...</div>';try{const r=await calcolaLocalita(LOCALITA.find(x=>x.nome===$('localita').value));renderDetail(r);renderChart(r);}catch(e){$('risultato').innerHTML='<div class="status low"><b>❌ Errore</b><p>'+e.message+'</p></div>';}finally{b.disabled=false;}}
